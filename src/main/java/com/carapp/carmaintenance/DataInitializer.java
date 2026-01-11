@@ -1,10 +1,14 @@
 package com.carapp.carmaintenance;
 
 import com.carapp.carmaintenance.model.Asigurare;
+import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.model.Masina;
+import com.carapp.carmaintenance.model.Piesa;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.AsigurareRepository;
+import com.carapp.carmaintenance.repository.IstoricServiceRepository;
 import com.carapp.carmaintenance.repository.MasinaRepository;
+import com.carapp.carmaintenance.repository.PiesaRepository;
 import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,13 +28,26 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private AsigurareRepository asigurareRepository;
 
+    @Autowired
+    private PiesaRepository piesaRepository;
+
+    @Autowired
+    private IstoricServiceRepository istoricServiceRepository;
+
     @Override
     public void run(String... args) throws Exception {
-        // Verifică dacă deja există date (comentat pentru a permite reinițializarea)
-        // if (userRepository.count() > 0) {
-        //     System.out.println("Datele există deja în baza de date!");
-        //     return;
-        // }
+        // Verifică dacă deja există date
+        if (userRepository.count() > 0) {
+            System.out.println("===========================================");
+            System.out.println("Datele există deja în baza de date!");
+            System.out.println("- " + userRepository.count() + " utilizatori");
+            System.out.println("- " + masinaRepository.count() + " mașini");
+            System.out.println("- " + asigurareRepository.count() + " asigurări");
+            System.out.println("- " + piesaRepository.count() + " piese");
+            System.out.println("- " + istoricServiceRepository.count() + " servicii efectuate");
+            System.out.println("===========================================");
+            return;
+        }
 
         System.out.println("Inițializare date...");
 
@@ -118,9 +135,67 @@ public class DataInitializer implements CommandLineRunner {
 
         masina3 = masinaRepository.save(masina3);
 
+        // Creează piese auto
+        Piesa ulei = new Piesa("Ulei motor 5W30", 150.0, "Castrol");
+        ulei = piesaRepository.save(ulei);
+
+        Piesa filtruUlei = new Piesa("Filtru ulei", 25.0, "Mann Filter");
+        filtruUlei = piesaRepository.save(filtruUlei);
+
+        Piesa filtruAer = new Piesa("Filtru aer", 35.0, "Bosch");
+        filtruAer = piesaRepository.save(filtruAer);
+
+        Piesa distributie = new Piesa("Kit distributie", 450.0, "Gates");
+        distributie = piesaRepository.save(distributie);
+
+        Piesa clapetaAcceleratie = new Piesa("Clapeta acceleratie", 320.0, "Pierburg");
+        clapetaAcceleratie = piesaRepository.save(clapetaAcceleratie);
+
+        Piesa placuteFrana = new Piesa("Placute frana fata", 180.0, "Brembo");
+        placuteFrana = piesaRepository.save(placuteFrana);
+
+        // Creează istoric service pentru masina1 (Dacia Logan)
+        IstoricService service1 = new IstoricService();
+        service1.setDataService(LocalDate.of(2023, 5, 10));
+        service1.setKilometrajLaService(40000);
+        service1.setDescriere("Schimb ulei si filtre");
+        service1.setServiceAuto("Service Auto Dacia TM");
+        service1.setMasina(masina1);
+        service1.adaugaPiesa(ulei);
+        service1.adaugaPiesa(filtruUlei);
+        service1.adaugaPiesa(filtruAer);
+        service1.calculeazaCostTotal();
+        istoricServiceRepository.save(service1);
+
+        IstoricService service2 = new IstoricService();
+        service2.setDataService(LocalDate.of(2024, 2, 15));
+        service2.setKilometrajLaService(120000);
+        service2.setDescriere("Schimb distributie");
+        service2.setServiceAuto("Service Auto Expert");
+        service2.setMasina(masina1);
+        service2.adaugaPiesa(distributie);
+        service2.calculeazaCostTotal();
+        istoricServiceRepository.save(service2);
+
+        // Creează istoric service pentru masina2 (Golf)
+        IstoricService service3 = new IstoricService();
+        service3.setDataService(LocalDate.of(2024, 8, 20));
+        service3.setKilometrajLaService(55000);
+        service3.setDescriere("Schimb clapeta acceleratie si placute frana");
+        service3.setServiceAuto("VW Service Center");
+        service3.setMasina(masina2);
+        service3.adaugaPiesa(clapetaAcceleratie);
+        service3.adaugaPiesa(placuteFrana);
+        service3.calculeazaCostTotal();
+        istoricServiceRepository.save(service3);
+
+        System.out.println("===========================================");
         System.out.println("Date inițializate cu succes!");
         System.out.println("- " + userRepository.count() + " utilizatori");
         System.out.println("- " + masinaRepository.count() + " mașini");
         System.out.println("- " + asigurareRepository.count() + " asigurări");
+        System.out.println("- " + piesaRepository.count() + " piese");
+        System.out.println("- " + istoricServiceRepository.count() + " servicii efectuate");
+        System.out.println("===========================================");
     }
 }

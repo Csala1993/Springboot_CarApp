@@ -1,5 +1,7 @@
 package com.carapp.carmaintenance.service;
 
+import com.carapp.carmaintenance.dto.IstoricServiceSimpleDTO;
+import com.carapp.carmaintenance.dto.MasinaDetailDTO;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.MasinaRepository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MasinaService {
@@ -72,5 +75,48 @@ public class MasinaService {
         Masina masina = masinaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
         masinaRepository.delete(masina);
+    }
+
+    // Conversie la DTO cu istoric service
+    public MasinaDetailDTO convertToDetailDTO(Masina masina) {
+        List<IstoricServiceSimpleDTO> istoricDTO = masina.getIstoricService().stream()
+                .map(service -> new IstoricServiceSimpleDTO(
+                        service.getId(),
+                        service.getDataService(),
+                        service.getKilometrajLaService(),
+                        service.getDescriere(),
+                        service.getServiceAuto(),
+                        service.getCostTotal(),
+                        service.getPieseSchimbate()
+                ))
+                .collect(Collectors.toList());
+
+        return new MasinaDetailDTO(
+                masina.getId(),
+                masina.getMarca(),
+                masina.getModel(),
+                masina.getAn(),
+                masina.getNumarInmatriculare(),
+                masina.getVin(),
+                masina.getKilometraj(),
+                masina.getAsigurare(),
+                istoricDTO
+        );
+    }
+
+    public List<MasinaDetailDTO> getAllMasiniDTO() {
+        return getAllMasini().stream()
+                .map(this::convertToDetailDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<MasinaDetailDTO> getMasiniByUserIdDTO(Long userId) {
+        return getMasiniByUserId(userId).stream()
+                .map(this::convertToDetailDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<MasinaDetailDTO> getMasinaByIdDTO(Long id) {
+        return getMasinaById(id).map(this::convertToDetailDTO);
     }
 }

@@ -1,5 +1,6 @@
 package com.carapp.carmaintenance.controller;
 
+import com.carapp.carmaintenance.dto.MasinaDetailDTO;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.service.MasinaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,18 @@ public class MasinaController {
     private MasinaService masinaService;
 
     @GetMapping
-    public ResponseEntity<List<Masina>> getAllMasini() {
-        return ResponseEntity.ok(masinaService.getAllMasini());
+    public ResponseEntity<List<MasinaDetailDTO>> getAllMasini() {
+        return ResponseEntity.ok(masinaService.getAllMasiniDTO());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Masina>> getMasiniByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(masinaService.getMasiniByUserId(userId));
+    public ResponseEntity<List<MasinaDetailDTO>> getMasiniByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(masinaService.getMasiniByUserIdDTO(userId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Masina> getMasinaById(@PathVariable Long id) {
-        return masinaService.getMasinaById(id)
+    public ResponseEntity<MasinaDetailDTO> getMasinaById(@PathVariable Long id) {
+        return masinaService.getMasinaByIdDTO(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

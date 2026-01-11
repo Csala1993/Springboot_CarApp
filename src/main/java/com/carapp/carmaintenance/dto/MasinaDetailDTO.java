@@ -1,56 +1,34 @@
-package com.carapp.carmaintenance.model;
+package com.carapp.carmaintenance.dto;
 
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
+import com.carapp.carmaintenance.model.Asigurare;
 import java.util.List;
 
-@Entity
-@Table(name = "masini")
-public class Masina {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class MasinaDetailDTO {
     private Long id;
-
-    @Column(nullable = false)
     private String marca;
-
-    @Column(nullable = false)
     private String model;
-
-    @Column(nullable = false)
     private Integer an;
-
-    @Column(nullable = false, unique = true)
     private String numarInmatriculare;
-
-    @Column
     private String vin;
-
-    @Column
     private Integer kilometraj;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "asigurare_id", referencedColumnName = "id")
     private Asigurare asigurare;
-
-    @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IstoricService> istoricService = new ArrayList<>();
+    private List<IstoricServiceSimpleDTO> istoricService;
 
     // Constructori
-    public Masina() {}
+    public MasinaDetailDTO() {}
 
-    public Masina(String marca, String model, Integer an, String numarInmatriculare) {
+    public MasinaDetailDTO(Long id, String marca, String model, Integer an,
+                           String numarInmatriculare, String vin, Integer kilometraj,
+                           Asigurare asigurare, List<IstoricServiceSimpleDTO> istoricService) {
+        this.id = id;
         this.marca = marca;
         this.model = model;
         this.an = an;
         this.numarInmatriculare = numarInmatriculare;
+        this.vin = vin;
+        this.kilometraj = kilometraj;
+        this.asigurare = asigurare;
+        this.istoricService = istoricService;
     }
 
     // Getters și Setters
@@ -110,41 +88,19 @@ public class Masina {
         this.kilometraj = kilometraj;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Asigurare getAsigurare() {
         return asigurare;
     }
 
     public void setAsigurare(Asigurare asigurare) {
         this.asigurare = asigurare;
-        if (asigurare != null) {
-            asigurare.setMasina(this);
-        }
     }
 
-    public List<IstoricService> getIstoricService() {
+    public List<IstoricServiceSimpleDTO> getIstoricService() {
         return istoricService;
     }
 
-    public void setIstoricService(List<IstoricService> istoricService) {
+    public void setIstoricService(List<IstoricServiceSimpleDTO> istoricService) {
         this.istoricService = istoricService;
-    }
-
-    // Metode helper pentru istoric service
-    public void adaugaService(IstoricService service) {
-        istoricService.add(service);
-        service.setMasina(this);
-    }
-
-    public void stergeService(IstoricService service) {
-        istoricService.remove(service);
-        service.setMasina(null);
     }
 }

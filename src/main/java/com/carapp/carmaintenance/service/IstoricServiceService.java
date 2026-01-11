@@ -1,0 +1,136 @@
+package com.carapp.carmaintenance.service;
+
+import com.carapp.carmaintenance.dto.IstoricServiceDTO;
+import com.carapp.carmaintenance.dto.MasinaDTO;
+import com.carapp.carmaintenance.model.IstoricService;
+import com.carapp.carmaintenance.model.Masina;
+import com.carapp.carmaintenance.model.Piesa;
+import com.carapp.carmaintenance.repository.IstoricServiceRepository;
+import com.carapp.carmaintenance.repository.MasinaRepository;
+import com.carapp.carmaintenance.repository.PiesaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class IstoricServiceService {
+
+    @Autowired
+    private IstoricServiceRepository istoricServiceRepository;
+
+    @Autowired
+    private MasinaRepository masinaRepository;
+
+    @Autowired
+    private PiesaRepository piesaRepository;
+
+    public List<IstoricService> getAllServices() {
+        return istoricServiceRepository.findAll();
+    }
+
+    public List<IstoricService> getServicesByMasinaId(Long masinaId) {
+        return istoricServiceRepository.findByMasinaIdOrderByDataServiceDesc(masinaId);
+    }
+
+    public Optional<IstoricService> getServiceById(Long id) {
+        return istoricServiceRepository.findById(id);
+    }
+
+    @Transactional
+    public IstoricService createService(Long masinaId, IstoricService service, List<Long> pieseIds) {
+        Masina masina = masinaRepository.findById(masinaId)
+                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        service.setMasina(masina);
+
+        // Adaugă piesele schimbate
+        if (pieseIds != null && !pieseIds.isEmpty()) {
+            for (Long piesaId : pieseIds) {
+                Piesa piesa = piesaRepository.findById(piesaId)
+                        .orElseThrow(() -> new RuntimeException("Piesa cu ID " + piesaId + " nu a fost găsită!"));
+                service.adaugaPiesa(piesa);
+            }
+        }
+
+        // Calculează costul total
+        service.calculeazaCostTotal();
+
+        return istoricServiceRepository.save(service);
+    }
+
+    @Transactional
+    public IstoricService updateService(Long id, IstoricService serviceDetails, List<Long> pieseIds) {
+        IstoricService service = istoricServiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service-ul nu a fost găsit!"));
+
+        service.setDataService(serviceDetails.getDataService());
+        service.setKilometrajLaService(serviceDetails.getKilometrajLaService());
+        service.setDescriere(serviceDetails.getDescriere());
+        service.setServiceAuto(serviceDetails.getServiceAuto());
+
+        // Actualizează piesele
+        if (pieseIds != null) {
+            service.getPieseSchimbate().clear();
+            for (Long piesaId : pieseIds) {
+                Piesa piesa = piesaRepository.findById(piesaId)
+                        .orElseThrow(() -> new RuntimeException("Piesa cu ID " + piesaId + " nu a fost găsită!"));
+                service.adaugaPiesa(piesa);
+            }
+        }
+
+        // Recalculează costul
+        service.calculeazaCostTotal();
+
+        return istoricServiceRepository.save(service);
+    }
+
+    public void deleteService(Long id) {
+        IstoricService service = istoricServiceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service-ul nu a fost găsit!"));
+        istoricServiceRepository.delete(service);
+    }
+
+    // Metode pentru conversie la DTO
+    public IstoricServiceDTO convertToDTO(IstoricService service) {
+        MasinaDTO masinaDTO = new MasinaDTO(
+                service.getMasina().getId(),
+                service.getMasina().getMarca(),
+                service.getMasina().getModel(),
+                service.getMasina().getAn(),
+                service.getMasina().getNumarInmatriculare(),
+                service.getMasina().getVin(),
+                service.getMasina().getKilometraj()
+        );
+
+        return new IstoricServiceDTO(
+                service.getId(),
+                service.getDataService(),
+                service.getKilometrajLaService(),
+                service.getDescriere(),
+                service.getServiceAuto(),
+                service.getCostTotal(),
+                masinaDTO,
+                service.getPieseSchimbate()
+        );
+    }
+
+    public List<IstoricServiceDTO> getAllServicesDTO() {
+        return getAllServices().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<IstoricServiceDTO> getServicesByMasinaIdDTO(Long masinaId) {
+        return getServicesByMasinaId(masinaId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<IstoricServiceDTO> getServiceByIdDTO(Long id) {
+        return getServiceById(id).map(this::convertToDTO);
+    }
+}
