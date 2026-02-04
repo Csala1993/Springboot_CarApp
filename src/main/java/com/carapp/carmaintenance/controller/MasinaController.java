@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.carapp.carmaintenance.dto.ITPRequestDTO;
+
 
 import java.util.List;
 
@@ -70,6 +72,16 @@ public class MasinaController {
     public ResponseEntity<?> adaugaRovinieta(@PathVariable Long id, @RequestBody RovinietaRequestDTO dto) {
         try {
             Masina updated = masinaService.adaugaRovinietaLaMasina(id, dto.getDataInceput(), dto.getDurata());
+            return ResponseEntity.status(HttpStatus.CREATED).body(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}/itp")
+    public ResponseEntity<?> adaugaItp(@PathVariable Long id, @RequestBody ITPRequestDTO dto) {
+        try {
+            Masina updated = masinaService.adaugaItpLaMasina(id, dto.getDataEfectuare());
             return ResponseEntity.status(HttpStatus.CREATED).body(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

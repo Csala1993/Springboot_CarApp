@@ -2,16 +2,17 @@ package com.carapp.carmaintenance.service;
 
 import com.carapp.carmaintenance.dto.IstoricServiceSimpleDTO;
 import com.carapp.carmaintenance.dto.MasinaDetailDTO;
+import com.carapp.carmaintenance.model.ITP;
 import com.carapp.carmaintenance.model.Masina;
+import com.carapp.carmaintenance.model.Rovinieta;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.carapp.carmaintenance.model.Rovinieta;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDate;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,9 +48,15 @@ public class MasinaService {
 
         masina.setUser(user);
 
-        // Setează relația bidirectională pentru asigurare dacă există
+        // ✅ Setează relațiile bidirecționale dacă există
         if (masina.getAsigurare() != null) {
             masina.getAsigurare().setMasina(masina);
+        }
+        if (masina.getRovinieta() != null) {
+            masina.getRovinieta().setMasina(masina);
+        }
+        if (masina.getItp() != null) {
+            masina.getItp().setMasina(masina);
         }
 
         return masinaRepository.save(masina);
@@ -66,9 +73,19 @@ public class MasinaService {
         masina.setVin(masinaDetails.getVin());
         masina.setKilometraj(masinaDetails.getKilometraj());
 
-        // Actualizează asigurarea dacă este furnizată
+        // ✅ Actualizează asigurarea dacă e furnizată
         if (masinaDetails.getAsigurare() != null) {
             masina.setAsigurare(masinaDetails.getAsigurare());
+        }
+
+        // ✅ Actualizează rovinieta dacă e furnizată (opțional)
+        if (masinaDetails.getRovinieta() != null) {
+            masina.setRovinieta(masinaDetails.getRovinieta());
+        }
+
+        // ✅ Actualizează ITP dacă e furnizat (opțional)
+        if (masinaDetails.getItp() != null) {
+            masina.setItp(masinaDetails.getItp());
         }
 
         return masinaRepository.save(masina);
@@ -80,7 +97,7 @@ public class MasinaService {
         masinaRepository.delete(masina);
     }
 
-    // Conversie la DTO cu istoric service
+    // ✅ Conversie la DTO cu istoric service + asigurare + rovinieta + itp
     public MasinaDetailDTO convertToDetailDTO(Masina masina) {
         List<IstoricServiceSimpleDTO> istoricDTO = masina.getIstoricService().stream()
                 .map(service -> new IstoricServiceSimpleDTO(
@@ -103,11 +120,10 @@ public class MasinaService {
                 masina.getVin(),
                 masina.getKilometraj(),
                 masina.getAsigurare(),
-                masina.getRovinieta(),   // ✅ ADĂUGAT
+                masina.getRovinieta(),
+                masina.getItp(),
                 istoricDTO
         );
-
-
     }
 
     public List<MasinaDetailDTO> getAllMasiniDTO() {
@@ -125,15 +141,44 @@ public class MasinaService {
     public Optional<MasinaDetailDTO> getMasinaByIdDTO(Long id) {
         return getMasinaById(id).map(this::convertToDetailDTO);
     }
+
+    // ✅ Atașează rovinieta la mașină (owner = Masina)
     @Transactional
     public Masina adaugaRovinietaLaMasina(Long masinaId, LocalDate dataInceput, Rovinieta.DurataRovinieta durata) {
         Masina masina = masinaRepository.findById(masinaId)
                 .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
 
-        Rovinieta rovinieta = new Rovinieta(dataInceput, durata);
+        if (dataInceput == null || durata == null) {
+            throw new RuntimeException("dataInceput și durata sunt obligatorii!");
+        }
 
-        masina.setRovinieta(rovinieta);   // setează și rovinieta.setMasina(this) din setter-ul tău
-        return masinaRepository.save(masina); // IMPORTANT: owner-ul e Masina → aici se scrie rovinieta_id
+        Rovinieta rovinieta = new Rovinieta(dataInceput, durata);
+        masina.setRovinieta(rovinieta);
+
+        return masinaRepository.save(masina);
     }
 
+    // ✅ Atașează ITP la mașină cu valabilitate calculată
+    @Transactional
+    public Masina adaugaItpLaMasina(Long masinaId, LocalDate dataEfectuare) {
+        Masina masina = masinaRepository.findById(masinaId)
+                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        if (dataEfectuare == null) {
+            throw new RuntimeException("dataEfectuare este obligatorie!");
+        }
+
+        int varsta = dataEfectuare.getYear() - masina.getAn();
+        int aniValabilitate;
+
+        if (varsta < 3) aniValabilitate = 3;
+        else if (varsta <= 12) aniValabilitate = 2;
+        else aniValabilitate = 1;
+
+        ITP itp = new ITP(dataEfectuare);
+        itp.setDataExpirare(dataEfectuare.plusYears(aniValabilitate));
+
+        masina.setItp(itp);
+        return masinaRepository.save(masina);
+    }
 }

@@ -47,6 +47,11 @@ public class Masina {
     @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IstoricService> istoricService = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "itp_id", referencedColumnName = "id")
+    private ITP itp;
+
+
     // Constructori
     public Masina() {}
 
@@ -162,4 +167,16 @@ public class Masina {
         istoricService.remove(service);
         service.setMasina(null);
     }
+
+    public ITP getItp() {
+        return itp;
+    }
+
+    public void setItp(ITP itp) {
+        this.itp = itp;
+        if (itp != null) {
+            itp.setMasina(this);
+        }
+    }
+
 }

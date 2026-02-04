@@ -2,6 +2,8 @@ package com.carapp.carmaintenance.dto;
 
 import com.carapp.carmaintenance.model.Asigurare;
 import com.carapp.carmaintenance.model.Rovinieta;
+import com.carapp.carmaintenance.model.ITP;
+
 
 import java.util.List;
 
@@ -16,13 +18,15 @@ public class MasinaDetailDTO {
     private Asigurare asigurare;
     private Rovinieta rovinieta; // ✅ ADĂUGAT
     private List<IstoricServiceSimpleDTO> istoricService;
+    private ITP itp;
+
 
     // Constructori
     public MasinaDetailDTO() {}
 
     public MasinaDetailDTO(Long id, String marca, String model, Integer an,
                            String numarInmatriculare, String vin, Integer kilometraj,
-                           Asigurare asigurare, Rovinieta rovinieta, // ✅ ADĂUGAT
+                           Asigurare asigurare, Rovinieta rovinieta, ITP itp,
                            List<IstoricServiceSimpleDTO> istoricService) {
         this.id = id;
         this.marca = marca;
@@ -32,7 +36,8 @@ public class MasinaDetailDTO {
         this.vin = vin;
         this.kilometraj = kilometraj;
         this.asigurare = asigurare;
-        this.rovinieta = rovinieta; // ✅ ADĂUGAT
+        this.rovinieta = rovinieta;
+        this.itp = itp;
         this.istoricService = istoricService;
     }
 
@@ -66,4 +71,8 @@ public class MasinaDetailDTO {
 
     public List<IstoricServiceSimpleDTO> getIstoricService() { return istoricService; }
     public void setIstoricService(List<IstoricServiceSimpleDTO> istoricService) { this.istoricService = istoricService; }
+
+    public ITP getItp() { return itp; }
+    public void setItp(ITP itp) { this.itp = itp; }
+
 }

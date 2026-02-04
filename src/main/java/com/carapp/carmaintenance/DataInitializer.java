@@ -1,6 +1,7 @@
 package com.carapp.carmaintenance;
 
 import com.carapp.carmaintenance.model.Asigurare;
+import com.carapp.carmaintenance.model.ITP;
 import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.model.Piesa;
@@ -40,12 +41,14 @@ public class DataInitializer implements CommandLineRunner {
         if (FORCE_RECREATE_DATA) {
             System.out.println("FORCE_RECREATE_DATA = true - TRUNCATE + RESTART IDENTITY + CASCADE...");
 
+            // ⚠️ include și tabela itp + FK-ul din masini
             jdbcTemplate.execute("""
                     TRUNCATE TABLE
                         service_piese,
                         istoric_service,
                         masini,
                         roviniete,
+                        itp,
                         asigurari,
                         piese,
                         users
@@ -86,8 +89,8 @@ public class DataInitializer implements CommandLineRunner {
         user2 = userRepository.save(user2);
 
         // =========================
-        // MAȘINI + ASIGURĂRI + ROVINIETE
-        // (IMPORTANT: owner-ul la tine e Masina → salvăm Masina)
+        // MAȘINI + ASIGURĂRI + ROVINIETE + ITP
+        // (owner-ul la tine e Masina → salvăm Masina)
         // =========================
 
         // --- Mașina 1 (Ion) ---
@@ -110,6 +113,9 @@ public class DataInitializer implements CommandLineRunner {
 
         Rovinieta rovinieta1 = new Rovinieta(LocalDate.of(2026, 1, 10), Rovinieta.DurataRovinieta.UN_AN);
         masina1.setRovinieta(rovinieta1);
+
+        // ITP (valabilitate calculată)
+        masina1.setItp(createItpForMasina(masina1, LocalDate.of(2026, 1, 5)));
 
         masina1 = masinaRepository.save(masina1);
 
@@ -134,6 +140,9 @@ public class DataInitializer implements CommandLineRunner {
         Rovinieta rovinieta2 = new Rovinieta(LocalDate.of(2026, 2, 1), Rovinieta.DurataRovinieta.TREIZECI_ZILE);
         masina2.setRovinieta(rovinieta2);
 
+        // ITP (valabilitate calculată)
+        masina2.setItp(createItpForMasina(masina2, LocalDate.of(2026, 2, 3)));
+
         masina2 = masinaRepository.save(masina2);
 
         // --- Mașina 3 (Maria) ---
@@ -155,6 +164,9 @@ public class DataInitializer implements CommandLineRunner {
         masina3.setAsigurare(asigurare3);
 
         // exemplu fără rovinietă (ca să testezi și cazul null)
+        // ITP (valabilitate calculată)
+        masina3.setItp(createItpForMasina(masina3, LocalDate.of(2026, 2, 4)));
+
         masina3 = masinaRepository.save(masina3);
 
         // =========================
@@ -212,5 +224,18 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("- " + piesaRepository.count() + " piese");
         System.out.println("- " + istoricServiceRepository.count() + " servicii efectuate");
         System.out.println("===========================================");
+    }
+
+    private ITP createItpForMasina(Masina masina, LocalDate dataEfectuare) {
+        int varsta = dataEfectuare.getYear() - masina.getAn();
+        int aniValabilitate;
+
+        if (varsta < 3) aniValabilitate = 3;
+        else if (varsta <= 12) aniValabilitate = 2;
+        else aniValabilitate = 1;
+
+        ITP itp = new ITP(dataEfectuare);
+        itp.setDataExpirare(dataEfectuare.plusYears(aniValabilitate));
+        return itp;
     }
 }
