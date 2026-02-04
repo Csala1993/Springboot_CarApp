@@ -1,6 +1,7 @@
 package com.carapp.carmaintenance.controller;
 
 import com.carapp.carmaintenance.dto.MasinaDetailDTO;
+import com.carapp.carmaintenance.dto.RovinietaRequestDTO;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.service.MasinaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,4 +65,15 @@ public class MasinaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/{id}/rovinieta")
+    public ResponseEntity<?> adaugaRovinieta(@PathVariable Long id, @RequestBody RovinietaRequestDTO dto) {
+        try {
+            Masina updated = masinaService.adaugaRovinietaLaMasina(id, dto.getDataInceput(), dto.getDurata());
+            return ResponseEntity.status(HttpStatus.CREATED).body(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

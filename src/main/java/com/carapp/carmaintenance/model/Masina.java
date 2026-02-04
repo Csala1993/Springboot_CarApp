@@ -40,6 +40,10 @@ public class Masina {
     @JoinColumn(name = "asigurare_id", referencedColumnName = "id")
     private Asigurare asigurare;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "rovinieta_id", referencedColumnName = "id")
+    private Rovinieta rovinieta;
+
     @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<IstoricService> istoricService = new ArrayList<>();
 
@@ -126,6 +130,17 @@ public class Masina {
         this.asigurare = asigurare;
         if (asigurare != null) {
             asigurare.setMasina(this);
+        }
+    }
+
+    public Rovinieta getRovinieta() {
+        return rovinieta;
+    }
+
+    public void setRovinieta(Rovinieta rovinieta) {
+        this.rovinieta = rovinieta;
+        if (rovinieta != null) {
+            rovinieta.setMasina(this);
         }
     }
 

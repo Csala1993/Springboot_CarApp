@@ -8,6 +8,9 @@ import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.carapp.carmaintenance.model.Rovinieta;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDate;
 
 import java.util.List;
 import java.util.Optional;
@@ -100,8 +103,11 @@ public class MasinaService {
                 masina.getVin(),
                 masina.getKilometraj(),
                 masina.getAsigurare(),
+                masina.getRovinieta(),   // ✅ ADĂUGAT
                 istoricDTO
         );
+
+
     }
 
     public List<MasinaDetailDTO> getAllMasiniDTO() {
@@ -119,4 +125,15 @@ public class MasinaService {
     public Optional<MasinaDetailDTO> getMasinaByIdDTO(Long id) {
         return getMasinaById(id).map(this::convertToDetailDTO);
     }
+    @Transactional
+    public Masina adaugaRovinietaLaMasina(Long masinaId, LocalDate dataInceput, Rovinieta.DurataRovinieta durata) {
+        Masina masina = masinaRepository.findById(masinaId)
+                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        Rovinieta rovinieta = new Rovinieta(dataInceput, durata);
+
+        masina.setRovinieta(rovinieta);   // setează și rovinieta.setMasina(this) din setter-ul tău
+        return masinaRepository.save(masina); // IMPORTANT: owner-ul e Masina → aici se scrie rovinieta_id
+    }
+
 }
