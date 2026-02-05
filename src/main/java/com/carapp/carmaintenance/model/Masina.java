@@ -179,4 +179,21 @@ public class Masina {
         }
     }
 
+    @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<IstoricInvestitii> istoricInvestitii = new java.util.ArrayList<>();
+
+    public java.util.List<IstoricInvestitii> getIstoricInvestitii() { return istoricInvestitii; }
+    public void setIstoricInvestitii(java.util.List<IstoricInvestitii> istoricInvestitii) { this.istoricInvestitii = istoricInvestitii; }
+
+    public void adaugaInvestitie(IstoricInvestitii inv) {
+        istoricInvestitii.add(inv);
+        inv.setMasina(this);
+    }
+
+    public void stergeInvestitie(IstoricInvestitii inv) {
+        istoricInvestitii.remove(inv);
+        inv.setMasina(null);
+    }
+
+
 }

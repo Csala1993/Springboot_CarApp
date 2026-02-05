@@ -2,12 +2,14 @@ package com.carapp.carmaintenance;
 
 import com.carapp.carmaintenance.model.Asigurare;
 import com.carapp.carmaintenance.model.ITP;
+import com.carapp.carmaintenance.model.IstoricInvestitii;
 import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.model.Piesa;
 import com.carapp.carmaintenance.model.Rovinieta;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.AsigurareRepository;
+import com.carapp.carmaintenance.repository.IstoricInvestitiiRepository;
 import com.carapp.carmaintenance.repository.IstoricServiceRepository;
 import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.PiesaRepository;
@@ -29,8 +31,8 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired private PiesaRepository piesaRepository;
     @Autowired private IstoricServiceRepository istoricServiceRepository;
     @Autowired private RovinietaRepository rovinietaRepository;
+    @Autowired private IstoricInvestitiiRepository investitiiRepository;
 
-    // ✅ pentru TRUNCATE + reset ID în PostgreSQL
     @Autowired private JdbcTemplate jdbcTemplate;
 
     // Setează la true când vrei să recreezi datele (și să pornească ID-urile de la 1)
@@ -41,11 +43,13 @@ public class DataInitializer implements CommandLineRunner {
         if (FORCE_RECREATE_DATA) {
             System.out.println("FORCE_RECREATE_DATA = true - TRUNCATE + RESTART IDENTITY + CASCADE...");
 
-            // ⚠️ include și tabela itp + FK-ul din masini
+            // ✅ include și join tables: service_piese + investitie_piese
             jdbcTemplate.execute("""
                     TRUNCATE TABLE
                         service_piese,
+                        investitie_piese,
                         istoric_service,
+                        istoric_investitii,
                         masini,
                         roviniete,
                         itp,
@@ -57,7 +61,6 @@ public class DataInitializer implements CommandLineRunner {
                     """);
         }
 
-        // Dacă există deja date, nu mai inițializăm
         if (userRepository.count() > 0) {
             System.out.println("===========================================");
             System.out.println("Datele există deja în baza de date!");
@@ -67,6 +70,7 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("- " + rovinietaRepository.count() + " roviniete");
             System.out.println("- " + piesaRepository.count() + " piese");
             System.out.println("- " + istoricServiceRepository.count() + " servicii efectuate");
+            System.out.println("- " + investitiiRepository.count() + " investiții");
             System.out.println("===========================================");
             return;
         }
@@ -90,10 +94,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // =========================
         // MAȘINI + ASIGURĂRI + ROVINIETE + ITP
-        // (owner-ul la tine e Masina → salvăm Masina)
         // =========================
 
-        // --- Mașina 1 (Ion) ---
         Masina masina1 = new Masina();
         masina1.setMarca("Dacia");
         masina1.setModel("Logan");
@@ -111,15 +113,11 @@ public class DataInitializer implements CommandLineRunner {
         asigurare1.setNumeProprietar("Ion Popescu");
         masina1.setAsigurare(asigurare1);
 
-        Rovinieta rovinieta1 = new Rovinieta(LocalDate.of(2026, 1, 10), Rovinieta.DurataRovinieta.UN_AN);
-        masina1.setRovinieta(rovinieta1);
-
-        // ITP (valabilitate calculată)
+        masina1.setRovinieta(new Rovinieta(LocalDate.of(2026, 1, 10), Rovinieta.DurataRovinieta.UN_AN));
         masina1.setItp(createItpForMasina(masina1, LocalDate.of(2026, 1, 5)));
 
         masina1 = masinaRepository.save(masina1);
 
-        // --- Mașina 2 (Ion) ---
         Masina masina2 = new Masina();
         masina2.setMarca("Volkswagen");
         masina2.setModel("Golf");
@@ -137,15 +135,11 @@ public class DataInitializer implements CommandLineRunner {
         asigurare2.setNumeProprietar("Ion Popescu");
         masina2.setAsigurare(asigurare2);
 
-        Rovinieta rovinieta2 = new Rovinieta(LocalDate.of(2026, 2, 1), Rovinieta.DurataRovinieta.TREIZECI_ZILE);
-        masina2.setRovinieta(rovinieta2);
-
-        // ITP (valabilitate calculată)
+        masina2.setRovinieta(new Rovinieta(LocalDate.of(2026, 2, 1), Rovinieta.DurataRovinieta.TREIZECI_ZILE));
         masina2.setItp(createItpForMasina(masina2, LocalDate.of(2026, 2, 3)));
 
         masina2 = masinaRepository.save(masina2);
 
-        // --- Mașina 3 (Maria) ---
         Masina masina3 = new Masina();
         masina3.setMarca("Renault");
         masina3.setModel("Clio");
@@ -163,14 +157,11 @@ public class DataInitializer implements CommandLineRunner {
         asigurare3.setNumeProprietar("Maria Ionescu");
         masina3.setAsigurare(asigurare3);
 
-        // exemplu fără rovinietă (ca să testezi și cazul null)
-        // ITP (valabilitate calculată)
         masina3.setItp(createItpForMasina(masina3, LocalDate.of(2026, 2, 4)));
-
         masina3 = masinaRepository.save(masina3);
 
         // =========================
-        // PIESE
+        // PIESE (le refolosim și la service și la investiții)
         // =========================
         Piesa ulei = piesaRepository.save(new Piesa("Ulei motor 5W30", 150.0, "Castrol"));
         Piesa filtruUlei = piesaRepository.save(new Piesa("Filtru ulei", 25.0, "Mann Filter"));
@@ -179,8 +170,13 @@ public class DataInitializer implements CommandLineRunner {
         Piesa clapetaAcceleratie = piesaRepository.save(new Piesa("Clapeta acceleratie", 320.0, "Pierburg"));
         Piesa placuteFrana = piesaRepository.save(new Piesa("Placute frana fata", 180.0, "Brembo"));
 
+        // 🧩 piese “investiții”
+        Piesa jante = piesaRepository.save(new Piesa("Set jante 18 inch", 3200.0, "OZ Racing"));
+        Piesa folii = piesaRepository.save(new Piesa("Folie omologată spate", 750.0, "LLumar"));
+        Piesa audio = piesaRepository.save(new Piesa("Sistem audio upgrade", 1900.0, "Pioneer"));
+
         // =========================
-        // ISTORIC SERVICE
+        // ISTORIC SERVICE (mentenanță)
         // =========================
         IstoricService service1 = new IstoricService();
         service1.setDataService(LocalDate.of(2023, 5, 10));
@@ -204,16 +200,29 @@ public class DataInitializer implements CommandLineRunner {
         service2.calculeazaCostTotal();
         istoricServiceRepository.save(service2);
 
-        IstoricService service3 = new IstoricService();
-        service3.setDataService(LocalDate.of(2024, 8, 20));
-        service3.setKilometrajLaService(55000);
-        service3.setDescriere("Schimb clapeta acceleratie si placute frana");
-        service3.setServiceAuto("VW Service Center");
-        service3.setMasina(masina2);
-        service3.adaugaPiesa(clapetaAcceleratie);
-        service3.adaugaPiesa(placuteFrana);
-        service3.calculeazaCostTotal();
-        istoricServiceRepository.save(service3);
+        // =========================
+        // ISTORIC INVESTIȚII (upgrade-uri)
+        // =========================
+        IstoricInvestitii inv1 = new IstoricInvestitii();
+        inv1.setDataInvestitie(LocalDate.of(2026, 1, 20));
+        inv1.setTitlu("Jante + folii");
+        inv1.setDescriere("Set jante 18 inch + folii omologate spate");
+        inv1.setManopera(300.0);
+        inv1.setMasina(masina1);
+        inv1.adaugaPiesa(jante);
+        inv1.adaugaPiesa(folii);
+        inv1.calculeazaCostTotal();
+        investitiiRepository.save(inv1);
+
+        IstoricInvestitii inv2 = new IstoricInvestitii();
+        inv2.setDataInvestitie(LocalDate.of(2026, 2, 2));
+        inv2.setTitlu("Upgrade audio");
+        inv2.setDescriere("Sistem audio îmbunătățit + montaj");
+        inv2.setManopera(250.0);
+        inv2.setMasina(masina2);
+        inv2.adaugaPiesa(audio);
+        inv2.calculeazaCostTotal();
+        investitiiRepository.save(inv2);
 
         System.out.println("===========================================");
         System.out.println("Date inițializate cu succes!");
@@ -223,6 +232,7 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("- " + rovinietaRepository.count() + " roviniete");
         System.out.println("- " + piesaRepository.count() + " piese");
         System.out.println("- " + istoricServiceRepository.count() + " servicii efectuate");
+        System.out.println("- " + investitiiRepository.count() + " investiții");
         System.out.println("===========================================");
     }
 
