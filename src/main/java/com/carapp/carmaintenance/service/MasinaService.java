@@ -11,6 +11,9 @@ import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.carapp.carmaintenance.dto.MasinaListDTO;
+import com.carapp.carmaintenance.dto.IstoricInvestitiiSimpleDTO;
+import com.carapp.carmaintenance.dto.PiesaMiniDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -111,7 +114,21 @@ public class MasinaService {
                 ))
                 .collect(Collectors.toList());
 
-        return new MasinaDetailDTO(
+        List<IstoricInvestitiiSimpleDTO> investitiiDTO = masina.getIstoricInvestitii().stream()
+                .map(inv -> new IstoricInvestitiiSimpleDTO(
+                        inv.getId(),
+                        inv.getDataInvestitie(),
+                        inv.getTitlu(),
+                        inv.getDescriere(),
+                        inv.getCostTotal(),
+                        inv.getManopera(),
+                        inv.getPiese().stream()
+                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+                                .collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toList());
+
+        MasinaDetailDTO dto = new MasinaDetailDTO(
                 masina.getId(),
                 masina.getMarca(),
                 masina.getModel(),
@@ -124,6 +141,9 @@ public class MasinaService {
                 masina.getItp(),
                 istoricDTO
         );
+
+        dto.setIstoricInvestitii(investitiiDTO);
+        return dto;
     }
 
     public List<MasinaDetailDTO> getAllMasiniDTO() {
@@ -180,5 +200,28 @@ public class MasinaService {
 
         masina.setItp(itp);
         return masinaRepository.save(masina);
+    }
+
+    public MasinaListDTO convertToListDTO(Masina masina) {
+        return new MasinaListDTO(
+                masina.getId(),
+                masina.getAn(),
+                masina.getMarca(),
+                masina.getVin(),
+                masina.getUser().getId(),
+                masina.getUser().getNume()
+        );
+    }
+
+    public List<MasinaListDTO> getAllMasiniListDTO() {
+        return masinaRepository.findAll().stream()
+                .map(this::convertToListDTO)
+                .toList();
+    }
+
+    public List<MasinaListDTO> getMasiniByUserIdListDTO(Long userId) {
+        return masinaRepository.findByUserId(userId).stream()
+                .map(this::convertToListDTO)
+                .toList();
     }
 }

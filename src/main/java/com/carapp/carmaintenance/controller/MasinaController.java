@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.carapp.carmaintenance.dto.ITPRequestDTO;
+import com.carapp.carmaintenance.dto.MasinaListDTO;
 
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class MasinaController {
     private MasinaService masinaService;
 
     @GetMapping
-    public ResponseEntity<List<MasinaDetailDTO>> getAllMasini() {
-        return ResponseEntity.ok(masinaService.getAllMasiniDTO());
+    public ResponseEntity<List<MasinaListDTO>> getAllMasini() {
+        return ResponseEntity.ok(masinaService.getAllMasiniListDTO());
     }
 
     @GetMapping("/user/{userId}")

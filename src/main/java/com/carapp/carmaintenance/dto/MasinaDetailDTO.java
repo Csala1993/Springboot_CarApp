@@ -19,6 +19,7 @@ public class MasinaDetailDTO {
     private Rovinieta rovinieta; // ✅ ADĂUGAT
     private List<IstoricServiceSimpleDTO> istoricService;
     private ITP itp;
+    private List<IstoricInvestitiiSimpleDTO> istoricInvestitii;
 
 
     // Constructori
@@ -74,5 +75,8 @@ public class MasinaDetailDTO {
 
     public ITP getItp() { return itp; }
     public void setItp(ITP itp) { this.itp = itp; }
+
+    public List<IstoricInvestitiiSimpleDTO> getIstoricInvestitii() { return istoricInvestitii; }
+    public void setIstoricInvestitii(List<IstoricInvestitiiSimpleDTO> istoricInvestitii) { this.istoricInvestitii = istoricInvestitii; }
 
 }

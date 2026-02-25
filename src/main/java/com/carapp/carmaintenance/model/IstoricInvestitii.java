@@ -88,4 +88,6 @@ public class IstoricInvestitii {
         double man = this.manopera != null ? this.manopera : 0.0;
         this.costTotal = sumaPiese + man;
     }
+
+
 }

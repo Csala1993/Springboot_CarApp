@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 public class IstoricInvestitiiService {
@@ -65,9 +66,9 @@ public class IstoricInvestitiiService {
     }
 
     private IstoricInvestitiiSimpleDTO toDTO(IstoricInvestitii inv) {
-        List<PiesaMiniDTO> piese = inv.getPiese().stream()
+        java.util.Set<PiesaMiniDTO> piese = inv.getPiese().stream()
                 .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         return new IstoricInvestitiiSimpleDTO(
                 inv.getId(),
