@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.carapp.carmaintenance.dto.UserDTO;
 
 import java.util.List;
 
@@ -17,11 +18,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
 
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsersDto());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
