@@ -16,7 +16,7 @@ public class MasinaDetailDTO {
     private String vin;
     private Integer kilometraj;
     private Asigurare asigurare;
-    private Rovinieta rovinieta; // ✅ ADĂUGAT
+    private Rovinieta rovinieta;
     private List<IstoricServiceSimpleDTO> istoricService;
     private ITP itp;
     private List<IstoricInvestitiiSimpleDTO> istoricInvestitii;
@@ -67,8 +67,8 @@ public class MasinaDetailDTO {
     public Asigurare getAsigurare() { return asigurare; }
     public void setAsigurare(Asigurare asigurare) { this.asigurare = asigurare; }
 
-    public Rovinieta getRovinieta() { return rovinieta; }          // ✅ ADĂUGAT
-    public void setRovinieta(Rovinieta rovinieta) { this.rovinieta = rovinieta; } // ✅ ADĂUGAT
+    public Rovinieta getRovinieta() { return rovinieta; }
+    public void setRovinieta(Rovinieta rovinieta) { this.rovinieta = rovinieta; }
 
     public List<IstoricServiceSimpleDTO> getIstoricService() { return istoricService; }
     public void setIstoricService(List<IstoricServiceSimpleDTO> istoricService) { this.istoricService = istoricService; }

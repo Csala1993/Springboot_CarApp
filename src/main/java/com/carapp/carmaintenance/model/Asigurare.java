@@ -31,7 +31,7 @@ public class Asigurare {
     @JsonIgnore
     private Masina masina;
 
-    // Constructori
+
     public Asigurare() {}
 
     public Asigurare(LocalDate dataInceput, LocalDate dataIncheiere,
@@ -43,7 +43,7 @@ public class Asigurare {
         this.numeProprietar = numeProprietar;
     }
 
-    // Getters și Setters
+
     public Long getId() {
         return id;
     }
@@ -100,7 +100,7 @@ public class Asigurare {
         this.masina = masina;
     }
 
-    // Metodă helper pentru verificare validitate
+
     public boolean esteValida() {
         LocalDate astazi = LocalDate.now();
         return !astazi.isBefore(dataInceput) && !astazi.isAfter(dataIncheiere);

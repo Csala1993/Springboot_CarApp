@@ -25,7 +25,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Masina> masini = new ArrayList<>();
 
-    // Constructori
+
     public User() {}
 
     public User(String nume, String email, String parola) {
@@ -34,7 +34,7 @@ public class User {
         this.parola = parola;
     }
 
-    // Getters și Setters
+
     public Long getId() {
         return id;
     }
@@ -75,7 +75,7 @@ public class User {
         this.masini = masini;
     }
 
-    // Metode helper pentru relație bidirectională
+
     public void adaugaMasina(Masina masina) {
         masini.add(masina);
         masina.setUser(this);

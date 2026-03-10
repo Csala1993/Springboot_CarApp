@@ -42,7 +42,7 @@ public class IstoricService {
     )
     private List<Piesa> pieseSchimbate = new ArrayList<>();
 
-    // Constructori
+
     public IstoricService() {}
 
     public IstoricService(LocalDate dataService, Integer kilometrajLaService, String descriere) {
@@ -51,7 +51,7 @@ public class IstoricService {
         this.descriere = descriere;
     }
 
-    // Getters și Setters
+
     public Long getId() {
         return id;
     }
@@ -116,7 +116,7 @@ public class IstoricService {
         this.pieseSchimbate = pieseSchimbate;
     }
 
-    // Metode helper
+
     public void adaugaPiesa(Piesa piesa) {
         pieseSchimbate.add(piesa);
     }
@@ -125,7 +125,7 @@ public class IstoricService {
         pieseSchimbate.remove(piesa);
     }
 
-    // Calculează costul total din piese
+
     public void calculeazaCostTotal() {
         this.costTotal = pieseSchimbate.stream()
                 .mapToDouble(Piesa::getPret)

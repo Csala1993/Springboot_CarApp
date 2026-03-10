@@ -19,23 +19,21 @@ public class IstoricInvestitii {
     private LocalDate dataInvestitie;
 
     @Column(nullable = false)
-    private String titlu; // ex: "Jante OZ 18''"
+    private String titlu;
 
     @Column(length = 2000)
     private String descriere;
 
     @Column(nullable = false)
-    private Double costTotal = 0.0; // se calculează din piese (+ opțional manopera)
+    private Double costTotal = 0.0;
 
     @Column
-    private Double manopera = 0.0; // opțional (dacă vrei)
-
+    private Double manopera = 0.0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "masina_id", nullable = false)
     @JsonIgnore
     private Masina masina;
 
-    // ✅ Refolosești Piesa exact ca la IstoricService
     @ManyToMany
     @JoinTable(
             name = "investitie_piese",
@@ -46,7 +44,7 @@ public class IstoricInvestitii {
 
     public IstoricInvestitii() {}
 
-    // --- getters/setters ---
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -71,7 +69,7 @@ public class IstoricInvestitii {
     public Set<Piesa> getPiese() { return piese; }
     public void setPiese(Set<Piesa> piese) { this.piese = piese; }
 
-    // --- helper methods ---
+
     public void adaugaPiesa(Piesa piesa) {
         this.piese.add(piesa);
     }
@@ -80,7 +78,6 @@ public class IstoricInvestitii {
         this.piese.remove(piesa);
     }
 
-    // ✅ cost total = sum(piese.pret) + manopera
     public void calculeazaCostTotal() {
         double sumaPiese = this.piese.stream()
                 .mapToDouble(p -> p.getPret() != null ? p.getPret() : 0.0)

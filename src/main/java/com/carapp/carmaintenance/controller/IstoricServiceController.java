@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/services")
+@RequestMapping("/api/service")
 @CrossOrigin(origins = "*")
 public class IstoricServiceController {
 

@@ -7,8 +7,8 @@ public class InvestitieRequestDTO {
     private LocalDate dataInvestitie;
     private String titlu;
     private String descriere;
-    private Double manopera;          // opțional
-    private List<Long> piesaIds;      // ✅ selectezi piese existente
+    private Double manopera;
+    private List<Long> piesaIds;
 
     public LocalDate getDataInvestitie() { return dataInvestitie; }
     public void setDataInvestitie(LocalDate dataInvestitie) { this.dataInvestitie = dataInvestitie; }

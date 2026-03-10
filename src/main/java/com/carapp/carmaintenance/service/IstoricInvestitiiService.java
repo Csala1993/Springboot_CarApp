@@ -40,7 +40,7 @@ public class IstoricInvestitiiService {
 
         inv.setMasina(masina);
 
-        // ✅ atașezi piese existente (selectate din UI)
+
         if (dto.getPiesaIds() != null && !dto.getPiesaIds().isEmpty()) {
             List<Piesa> piese = piesaRepository.findAllById(dto.getPiesaIds());
             if (piese.size() != dto.getPiesaIds().size()) {

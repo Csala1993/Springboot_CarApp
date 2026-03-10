@@ -26,7 +26,7 @@ public class Rovinieta {
     @JsonIgnore
     private Masina masina;
 
-    // Enum pentru durata
+
     public enum DurataRovinieta {
         O_ZI(1),
         TREIZECI_ZILE(30),
@@ -43,7 +43,7 @@ public class Rovinieta {
         }
     }
 
-    // Constructori
+
     public Rovinieta() {}
 
     public Rovinieta(LocalDate dataInceput, DurataRovinieta durata) {
@@ -52,7 +52,7 @@ public class Rovinieta {
         this.dataExpirare = calculeazaDataExpirare();
     }
 
-    // Getters și Setters
+
     public Long getId() {
         return id;
     }
@@ -101,7 +101,7 @@ public class Rovinieta {
         this.masina = masina;
     }
 
-    // Metodă pentru calcularea datei de expirare
+
     private LocalDate calculeazaDataExpirare() {
         if (dataInceput == null || durata == null) {
             return null;
@@ -109,13 +109,13 @@ public class Rovinieta {
         return dataInceput.plusDays(durata.getZile());
     }
 
-    // Metodă helper pentru verificare validitate
+
     public boolean esteValida() {
         LocalDate astazi = LocalDate.now();
         return !astazi.isBefore(dataInceput) && !astazi.isAfter(dataExpirare);
     }
 
-    // Metodă helper pentru zile până la expirare
+
     public long zileRamase() {
         LocalDate astazi = LocalDate.now();
         if (astazi.isAfter(dataExpirare)) {

@@ -24,12 +24,11 @@ public class RovinietaService {
     }
 
     public Rovinieta createRovinieta(Rovinieta rovinieta) {
-        // Validare: data început nu poate fi în trecut
+
         if (rovinieta.getDataInceput().isBefore(LocalDate.now())) {
             throw new RuntimeException("Data început nu poate fi în trecut!");
         }
 
-        // Data expirare se calculează automat în constructor/setter
         return rovinietaRepository.save(rovinieta);
     }
 
@@ -39,7 +38,6 @@ public class RovinietaService {
 
         rovinieta.setDataInceput(rovinietaDetails.getDataInceput());
         rovinieta.setDurata(rovinietaDetails.getDurata());
-        // Data expirare se recalculează automat
 
         return rovinietaRepository.save(rovinieta);
     }
@@ -50,14 +48,14 @@ public class RovinietaService {
         rovinietaRepository.delete(rovinieta);
     }
 
-    // Găsește roviniete care expiră în următoarele X zile
+
     public List<Rovinieta> getRovinieteCareExpira(int zile) {
         LocalDate astazi = LocalDate.now();
         LocalDate dataViitoare = astazi.plusDays(zile);
         return rovinietaRepository.findByDataExpirareBeforeAndDataExpirareAfter(dataViitoare, astazi);
     }
 
-    // Găsește roviniete expirate
+
     public List<Rovinieta> getRovinieteExpirate() {
         return rovinietaRepository.findByDataExpirareBefore(LocalDate.now());
     }

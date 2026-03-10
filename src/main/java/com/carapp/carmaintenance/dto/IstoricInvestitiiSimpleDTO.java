@@ -11,7 +11,7 @@ public class IstoricInvestitiiSimpleDTO {
     private Double costTotal;
     private Double manopera;
 
-    // opțional: piese “light”
+
     private Set<PiesaMiniDTO> piese;
 
     public IstoricInvestitiiSimpleDTO(Long id, LocalDate dataInvestitie, String titlu, String descriere,

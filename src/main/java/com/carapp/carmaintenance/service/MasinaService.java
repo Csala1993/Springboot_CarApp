@@ -51,7 +51,7 @@ public class MasinaService {
 
         masina.setUser(user);
 
-        // ✅ Setează relațiile bidirecționale dacă există
+
         if (masina.getAsigurare() != null) {
             masina.getAsigurare().setMasina(masina);
         }
@@ -76,17 +76,17 @@ public class MasinaService {
         masina.setVin(masinaDetails.getVin());
         masina.setKilometraj(masinaDetails.getKilometraj());
 
-        // ✅ Actualizează asigurarea dacă e furnizată
+
         if (masinaDetails.getAsigurare() != null) {
             masina.setAsigurare(masinaDetails.getAsigurare());
         }
 
-        // ✅ Actualizează rovinieta dacă e furnizată (opțional)
+
         if (masinaDetails.getRovinieta() != null) {
             masina.setRovinieta(masinaDetails.getRovinieta());
         }
 
-        // ✅ Actualizează ITP dacă e furnizat (opțional)
+
         if (masinaDetails.getItp() != null) {
             masina.setItp(masinaDetails.getItp());
         }
@@ -100,7 +100,7 @@ public class MasinaService {
         masinaRepository.delete(masina);
     }
 
-    // ✅ Conversie la DTO cu istoric service + asigurare + rovinieta + itp
+
     public MasinaDetailDTO convertToDetailDTO(Masina masina) {
         List<IstoricServiceSimpleDTO> istoricDTO = masina.getIstoricService().stream()
                 .map(service -> new IstoricServiceSimpleDTO(
@@ -162,7 +162,7 @@ public class MasinaService {
         return getMasinaById(id).map(this::convertToDetailDTO);
     }
 
-    // ✅ Atașează rovinieta la mașină (owner = Masina)
+
     @Transactional
     public Masina adaugaRovinietaLaMasina(Long masinaId, LocalDate dataInceput, Rovinieta.DurataRovinieta durata) {
         Masina masina = masinaRepository.findById(masinaId)
@@ -178,7 +178,7 @@ public class MasinaService {
         return masinaRepository.save(masina);
     }
 
-    // ✅ Atașează ITP la mașină cu valabilitate calculată
+
     @Transactional
     public Masina adaugaItpLaMasina(Long masinaId, LocalDate dataEfectuare) {
         Masina masina = masinaRepository.findById(masinaId)

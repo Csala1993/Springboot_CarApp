@@ -13,7 +13,7 @@ public class IstoricServiceSimpleDTO {
     private Double costTotal;
     private List<Piesa> pieseSchimbate;
 
-    // Constructori
+
     public IstoricServiceSimpleDTO() {}
 
     public IstoricServiceSimpleDTO(Long id, LocalDate dataService, Integer kilometrajLaService,

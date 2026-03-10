@@ -14,7 +14,7 @@ public class IstoricServiceDTO {
     private MasinaDTO masina;
     private List<Piesa> pieseSchimbate;
 
-    // Constructori
+
     public IstoricServiceDTO() {}
 
     public IstoricServiceDTO(Long id, LocalDate dataService, Integer kilometrajLaService,
@@ -30,7 +30,7 @@ public class IstoricServiceDTO {
         this.pieseSchimbate = pieseSchimbate;
     }
 
-    // Getters și Setters
+
     public Long getId() {
         return id;
     }
