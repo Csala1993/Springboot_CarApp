@@ -41,6 +41,12 @@ public class MasinaService {
         return masinaRepository.findById(id);
     }
 
+    public List<MasinaDetailDTO> getMasiniByUserIdDTO(Long userId) {
+        return getMasiniByUserId(userId).stream()
+                .map(this::convertToDetailDTO)
+                .collect(Collectors.toList());
+    }
+
     public Masina createMasina(Long userId, Masina masina) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilizatorul nu a fost găsit!"));
@@ -110,7 +116,9 @@ public class MasinaService {
                         service.getDescriere(),
                         service.getServiceAuto(),
                         service.getCostTotal(),
-                        service.getPieseSchimbate()
+                        service.getPieseSchimbate().stream()          // ← linie nouă
+                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret())) // ← linie nouă
+                                .collect(Collectors.toList())             // ← linie nouă
                 ))
                 .collect(Collectors.toList());
 
@@ -146,17 +154,9 @@ public class MasinaService {
         return dto;
     }
 
-    public List<MasinaDetailDTO> getAllMasiniDTO() {
-        return getAllMasini().stream()
-                .map(this::convertToDetailDTO)
-                .collect(Collectors.toList());
-    }
 
-    public List<MasinaDetailDTO> getMasiniByUserIdDTO(Long userId) {
-        return getMasiniByUserId(userId).stream()
-                .map(this::convertToDetailDTO)
-                .collect(Collectors.toList());
-    }
+
+
 
     public Optional<MasinaDetailDTO> getMasinaByIdDTO(Long id) {
         return getMasinaById(id).map(this::convertToDetailDTO);
@@ -219,9 +219,5 @@ public class MasinaService {
                 .toList();
     }
 
-    public List<MasinaListDTO> getMasiniByUserIdListDTO(Long userId) {
-        return masinaRepository.findByUserId(userId).stream()
-                .map(this::convertToListDTO)
-                .toList();
-    }
+
 }

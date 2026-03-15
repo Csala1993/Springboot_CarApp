@@ -1,5 +1,6 @@
 package com.carapp.carmaintenance.service;
 
+import com.carapp.carmaintenance.dto.PiesaMiniDTO;
 import com.carapp.carmaintenance.dto.IstoricServiceDTO;
 import com.carapp.carmaintenance.dto.MasinaDTO;
 import com.carapp.carmaintenance.model.IstoricService;
@@ -104,7 +105,11 @@ public class IstoricServiceService {
                 service.getMasina().getNumarInmatriculare(),
                 service.getMasina().getVin(),
                 service.getMasina().getKilometraj()
-        );
+        );                                          // ← asta o păstrezi
+
+        List<PiesaMiniDTO> pieseDTO = service.getPieseSchimbate().stream()  // ← adaugi asta
+                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+                .collect(Collectors.toList());
 
         return new IstoricServiceDTO(
                 service.getId(),
@@ -114,7 +119,7 @@ public class IstoricServiceService {
                 service.getServiceAuto(),
                 service.getCostTotal(),
                 masinaDTO,
-                service.getPieseSchimbate()
+                pieseDTO         // ← era service.getPieseSchimbate()
         );
     }
 

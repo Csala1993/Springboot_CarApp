@@ -1,6 +1,5 @@
 package com.carapp.carmaintenance.dto;
 
-import com.carapp.carmaintenance.model.Piesa;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -11,14 +10,13 @@ public class IstoricServiceSimpleDTO {
     private String descriere;
     private String serviceAuto;
     private Double costTotal;
-    private List<Piesa> pieseSchimbate;
-
+    private List<PiesaMiniDTO> pieseSchimbate; // ← era List<Piesa>
 
     public IstoricServiceSimpleDTO() {}
 
     public IstoricServiceSimpleDTO(Long id, LocalDate dataService, Integer kilometrajLaService,
                                    String descriere, String serviceAuto, Double costTotal,
-                                   List<Piesa> pieseSchimbate) {
+                                   List<PiesaMiniDTO> pieseSchimbate) { // ← era List<Piesa>
         this.id = id;
         this.dataService = dataService;
         this.kilometrajLaService = kilometrajLaService;
@@ -28,60 +26,18 @@ public class IstoricServiceSimpleDTO {
         this.pieseSchimbate = pieseSchimbate;
     }
 
-    // Getters și Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDate getDataService() {
-        return dataService;
-    }
-
-    public void setDataService(LocalDate dataService) {
-        this.dataService = dataService;
-    }
-
-    public Integer getKilometrajLaService() {
-        return kilometrajLaService;
-    }
-
-    public void setKilometrajLaService(Integer kilometrajLaService) {
-        this.kilometrajLaService = kilometrajLaService;
-    }
-
-    public String getDescriere() {
-        return descriere;
-    }
-
-    public void setDescriere(String descriere) {
-        this.descriere = descriere;
-    }
-
-    public String getServiceAuto() {
-        return serviceAuto;
-    }
-
-    public void setServiceAuto(String serviceAuto) {
-        this.serviceAuto = serviceAuto;
-    }
-
-    public Double getCostTotal() {
-        return costTotal;
-    }
-
-    public void setCostTotal(Double costTotal) {
-        this.costTotal = costTotal;
-    }
-
-    public List<Piesa> getPieseSchimbate() {
-        return pieseSchimbate;
-    }
-
-    public void setPieseSchimbate(List<Piesa> pieseSchimbate) {
-        this.pieseSchimbate = pieseSchimbate;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public LocalDate getDataService() { return dataService; }
+    public void setDataService(LocalDate dataService) { this.dataService = dataService; }
+    public Integer getKilometrajLaService() { return kilometrajLaService; }
+    public void setKilometrajLaService(Integer kilometrajLaService) { this.kilometrajLaService = kilometrajLaService; }
+    public String getDescriere() { return descriere; }
+    public void setDescriere(String descriere) { this.descriere = descriere; }
+    public String getServiceAuto() { return serviceAuto; }
+    public void setServiceAuto(String serviceAuto) { this.serviceAuto = serviceAuto; }
+    public Double getCostTotal() { return costTotal; }
+    public void setCostTotal(Double costTotal) { this.costTotal = costTotal; }
+    public List<PiesaMiniDTO> getPieseSchimbate() { return pieseSchimbate; }
+    public void setPieseSchimbate(List<PiesaMiniDTO> pieseSchimbate) { this.pieseSchimbate = pieseSchimbate; }
 }
