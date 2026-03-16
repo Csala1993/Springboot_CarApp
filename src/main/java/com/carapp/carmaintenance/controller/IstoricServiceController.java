@@ -1,7 +1,7 @@
 package com.carapp.carmaintenance.controller;
 
 import com.carapp.carmaintenance.dto.IstoricServiceDTO;
-import com.carapp.carmaintenance.dto.IstoricServiceRequestDTO;  // ← mutat aici sus
+import com.carapp.carmaintenance.dto.IstoricServiceRequestDTO;
 import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.service.IstoricServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +46,7 @@ public class IstoricServiceController {
             service.setKilometrajLaService(dto.getKilometrajLaService());
             service.setDescriere(dto.getDescriere());
             service.setServiceAuto(dto.getServiceAuto());
+            service.setManopera(dto.getManopera()); // ADĂUGAT
 
             IstoricService createdService = istoricServiceService.createService(
                     masinaId, service, dto.getPieseIds());
@@ -65,6 +66,7 @@ public class IstoricServiceController {
             service.setKilometrajLaService(dto.getKilometrajLaService());
             service.setDescriere(dto.getDescriere());
             service.setServiceAuto(dto.getServiceAuto());
+            service.setManopera(dto.getManopera()); // ADĂUGAT
 
             IstoricService updatedService = istoricServiceService.updateService(
                     id, service, dto.getPieseIds());

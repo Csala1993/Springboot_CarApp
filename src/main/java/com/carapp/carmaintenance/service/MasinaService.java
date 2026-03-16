@@ -57,7 +57,6 @@ public class MasinaService {
 
         masina.setUser(user);
 
-
         if (masina.getAsigurare() != null) {
             masina.getAsigurare().setMasina(masina);
         }
@@ -82,17 +81,12 @@ public class MasinaService {
         masina.setVin(masinaDetails.getVin());
         masina.setKilometraj(masinaDetails.getKilometraj());
 
-
         if (masinaDetails.getAsigurare() != null) {
             masina.setAsigurare(masinaDetails.getAsigurare());
         }
-
-
         if (masinaDetails.getRovinieta() != null) {
             masina.setRovinieta(masinaDetails.getRovinieta());
         }
-
-
         if (masinaDetails.getItp() != null) {
             masina.setItp(masinaDetails.getItp());
         }
@@ -106,7 +100,6 @@ public class MasinaService {
         masinaRepository.delete(masina);
     }
 
-
     public MasinaDetailDTO convertToDetailDTO(Masina masina) {
         List<IstoricServiceSimpleDTO> istoricDTO = masina.getIstoricService().stream()
                 .map(service -> new IstoricServiceSimpleDTO(
@@ -116,9 +109,10 @@ public class MasinaService {
                         service.getDescriere(),
                         service.getServiceAuto(),
                         service.getCostTotal(),
-                        service.getPieseSchimbate().stream()          // ← linie nouă
-                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret())) // ← linie nouă
-                                .collect(Collectors.toList())             // ← linie nouă
+                        service.getManopera(), // ADĂUGAT
+                        service.getPieseSchimbate().stream()
+                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+                                .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
 
@@ -154,14 +148,9 @@ public class MasinaService {
         return dto;
     }
 
-
-
-
-
     public Optional<MasinaDetailDTO> getMasinaByIdDTO(Long id) {
         return getMasinaById(id).map(this::convertToDetailDTO);
     }
-
 
     @Transactional
     public Masina adaugaRovinietaLaMasina(Long masinaId, LocalDate dataInceput, Rovinieta.DurataRovinieta durata) {
@@ -177,7 +166,6 @@ public class MasinaService {
 
         return masinaRepository.save(masina);
     }
-
 
     @Transactional
     public Masina adaugaItpLaMasina(Long masinaId, LocalDate dataEfectuare) {
@@ -218,6 +206,4 @@ public class MasinaService {
                 .map(this::convertToListDTO)
                 .toList();
     }
-
-
 }

@@ -8,6 +8,7 @@ public class IstoricServiceRequestDTO {
     private Integer kilometrajLaService;
     private String descriere;
     private String serviceAuto;
+    private Double manopera;
     private List<Long> pieseIds;
 
     public LocalDate getDataService() { return dataService; }
@@ -20,4 +21,6 @@ public class IstoricServiceRequestDTO {
     public void setServiceAuto(String serviceAuto) { this.serviceAuto = serviceAuto; }
     public List<Long> getPieseIds() { return pieseIds; }
     public void setPieseIds(List<Long> pieseIds) { this.pieseIds = pieseIds; }
+    public Double getManopera() { return manopera; }
+    public void setManopera(Double manopera) { this.manopera = manopera; }
 }

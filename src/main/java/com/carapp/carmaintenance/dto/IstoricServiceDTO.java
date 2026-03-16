@@ -11,25 +11,29 @@ public class IstoricServiceDTO {
     private String serviceAuto;
     private Double costTotal;
     private MasinaDTO masina;
-    private List<PiesaMiniDTO> pieseSchimbate; // ← era List<Piesa>
+    private Double manopera;
+    private List<PiesaMiniDTO> pieseSchimbate;
 
     public IstoricServiceDTO() {}
 
     public IstoricServiceDTO(Long id, LocalDate dataService, Integer kilometrajLaService,
                              String descriere, String serviceAuto, Double costTotal,
-                             MasinaDTO masina, List<PiesaMiniDTO> pieseSchimbate) { // ← era List<Piesa>
+                             Double manopera, MasinaDTO masina, List<PiesaMiniDTO> pieseSchimbate) {
         this.id = id;
         this.dataService = dataService;
         this.kilometrajLaService = kilometrajLaService;
         this.descriere = descriere;
         this.serviceAuto = serviceAuto;
         this.costTotal = costTotal;
+        this.manopera = manopera; // ADAUGĂ
         this.masina = masina;
         this.pieseSchimbate = pieseSchimbate;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    public Double getManopera() { return manopera; }
+    public void setManopera(Double manopera) { this.manopera = manopera; }
     public LocalDate getDataService() { return dataService; }
     public void setDataService(LocalDate dataService) { this.dataService = dataService; }
     public Integer getKilometrajLaService() { return kilometrajLaService; }

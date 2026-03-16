@@ -27,6 +27,9 @@ public class IstoricService {
     private String serviceAuto; // Numele service-ului auto unde s-a făcut
 
     @Column
+    private Double manopera;
+
+    @Column
     private Double costTotal;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -84,6 +87,10 @@ public class IstoricService {
         this.descriere = descriere;
     }
 
+    public Double getManopera() { return manopera; }
+
+    public void setManopera(Double manopera) { this.manopera = manopera; }
+
     public String getServiceAuto() {
         return serviceAuto;
     }
@@ -127,8 +134,9 @@ public class IstoricService {
 
 
     public void calculeazaCostTotal() {
-        this.costTotal = pieseSchimbate.stream()
+        double costPiese = pieseSchimbate.stream()
                 .mapToDouble(Piesa::getPret)
                 .sum();
+        this.costTotal = costPiese + (manopera != null ? manopera : 0.0);
     }
 }

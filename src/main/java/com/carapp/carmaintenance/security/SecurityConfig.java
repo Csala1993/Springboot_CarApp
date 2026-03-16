@@ -61,7 +61,8 @@ public class SecurityConfig {
 
                         // endpoint-uri masini
                         .requestMatchers("/api/masini/**").hasAnyRole("USER", "ADMIN")
-
+                        .requestMatchers("/api/service/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/investitii/**").hasAnyRole("USER", "ADMIN")
 
                         // orice altceva
                         .anyRequest().authenticated()

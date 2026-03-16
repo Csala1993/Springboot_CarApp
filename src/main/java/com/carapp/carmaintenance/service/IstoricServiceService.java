@@ -48,7 +48,6 @@ public class IstoricServiceService {
 
         service.setMasina(masina);
 
-        // Adaugă piesele schimbate
         if (pieseIds != null && !pieseIds.isEmpty()) {
             for (Long piesaId : pieseIds) {
                 Piesa piesa = piesaRepository.findById(piesaId)
@@ -57,9 +56,7 @@ public class IstoricServiceService {
             }
         }
 
-        // Calculează costul total
-        service.calculeazaCostTotal();
-
+        service.calculeazaCostTotal(); // include manopera + piese
         return istoricServiceRepository.save(service);
     }
 
@@ -72,8 +69,8 @@ public class IstoricServiceService {
         service.setKilometrajLaService(serviceDetails.getKilometrajLaService());
         service.setDescriere(serviceDetails.getDescriere());
         service.setServiceAuto(serviceDetails.getServiceAuto());
+        service.setManopera(serviceDetails.getManopera()); // ADĂUGAT
 
-        // Actualizează piesele
         if (pieseIds != null) {
             service.getPieseSchimbate().clear();
             for (Long piesaId : pieseIds) {
@@ -83,9 +80,7 @@ public class IstoricServiceService {
             }
         }
 
-        // Recalculează costul
-        service.calculeazaCostTotal();
-
+        service.calculeazaCostTotal(); // include manopera + piese
         return istoricServiceRepository.save(service);
     }
 
@@ -95,7 +90,6 @@ public class IstoricServiceService {
         istoricServiceRepository.delete(service);
     }
 
-    // Metode pentru conversie la DTO
     public IstoricServiceDTO convertToDTO(IstoricService service) {
         MasinaDTO masinaDTO = new MasinaDTO(
                 service.getMasina().getId(),
@@ -105,9 +99,9 @@ public class IstoricServiceService {
                 service.getMasina().getNumarInmatriculare(),
                 service.getMasina().getVin(),
                 service.getMasina().getKilometraj()
-        );                                          // ← asta o păstrezi
+        );
 
-        List<PiesaMiniDTO> pieseDTO = service.getPieseSchimbate().stream()  // ← adaugi asta
+        List<PiesaMiniDTO> pieseDTO = service.getPieseSchimbate().stream()
                 .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
                 .collect(Collectors.toList());
 
@@ -118,8 +112,9 @@ public class IstoricServiceService {
                 service.getDescriere(),
                 service.getServiceAuto(),
                 service.getCostTotal(),
+                service.getManopera(), // ADAUGĂ
                 masinaDTO,
-                pieseDTO         // ← era service.getPieseSchimbate()
+                pieseDTO
         );
     }
 
