@@ -188,7 +188,7 @@ public class MasinaService {
             throw new RuntimeException("dataEfectuare este obligatorie!");
         }
 
-        int varsta = dataEfectuare.getYear() - masina.getAn();
+        int varsta = LocalDate.now().getYear() - masina.getAn();
         int aniValabilitate;
 
         if (varsta < 3) aniValabilitate = 3;

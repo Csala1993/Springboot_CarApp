@@ -25,6 +25,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Masina> masini = new ArrayList<>();
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     public User() {}
 
@@ -32,6 +35,7 @@ public class User {
         this.nume = nume;
         this.email = email;
         this.parola = parola;
+        this.role=Role.USER;
     }
 
 
@@ -84,5 +88,13 @@ public class User {
     public void stergeMasina(Masina masina) {
         masini.remove(masina);
         masina.setUser(null);
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

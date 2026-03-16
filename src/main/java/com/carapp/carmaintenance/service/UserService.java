@@ -6,6 +6,7 @@ import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -33,6 +37,7 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Un utilizator cu acest email există deja!");
         }
+        user.setParola(passwordEncoder.encode(user.getParola())); // ADAUGĂ
         return userRepository.save(user);
     }
 
@@ -43,7 +48,7 @@ public class UserService {
         user.setNume(userDetails.getNume());
         user.setEmail(userDetails.getEmail());
         if (userDetails.getParola() != null && !userDetails.getParola().isEmpty()) {
-            user.setParola(userDetails.getParola());
+            user.setParola(passwordEncoder.encode(userDetails.getParola())); // modifică
         }
 
         return userRepository.save(user);

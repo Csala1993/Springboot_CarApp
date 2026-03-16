@@ -4,6 +4,8 @@ import com.carapp.carmaintenance.model.Asigurare;
 import com.carapp.carmaintenance.repository.AsigurareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.carapp.carmaintenance.model.Masina;
+import com.carapp.carmaintenance.repository.MasinaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,9 +13,26 @@ import java.util.Optional;
 
 @Service
 public class AsigurareService {
-
     @Autowired
     private AsigurareRepository asigurareRepository;
+
+    @Autowired
+    private MasinaRepository masinaRepository;
+
+    public Asigurare createAsigurareForMasina(Long masinaId, Asigurare asigurare) {
+        Masina masina = masinaRepository.findById(masinaId)
+                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        if (asigurare.getDataInceput().isAfter(asigurare.getDataIncheiere())) {
+            throw new RuntimeException("Data de început nu poate fi după data de încheiere!");
+        }
+
+        asigurare.setVinMasina(masina.getVin()); // setează VIN-ul automat din mașină
+        masina.setAsigurare(asigurare);
+        masinaRepository.save(masina);
+
+        return asigurare;
+    }
 
     public List<Asigurare> getAllAsigurari() {
         return asigurareRepository.findAll();

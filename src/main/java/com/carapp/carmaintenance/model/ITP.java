@@ -2,6 +2,8 @@ package com.carapp.carmaintenance.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.Transient;
+import java.time.temporal.ChronoUnit;
 
 import java.time.LocalDate;
 
@@ -23,6 +25,7 @@ public class ITP {
     @JsonIgnore
     private Masina masina;
 
+
     public ITP() {}
 
     public ITP(LocalDate dataEfectuare) {
@@ -40,4 +43,13 @@ public class ITP {
 
     public Masina getMasina() { return masina; }
     public void setMasina(Masina masina) { this.masina = masina; }
+
+    @Transient
+    public long getZileRamase() {
+        return ChronoUnit.DAYS.between(LocalDate.now(), dataExpirare);
+    }
 }
+
+
+
+

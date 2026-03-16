@@ -51,6 +51,16 @@ public class AsigurareController {
         }
     }
 
+    @PostMapping("/masina/{masinaId}")
+    public ResponseEntity<?> createAsigurareForMasina(@PathVariable Long masinaId, @RequestBody Asigurare asigurare) {
+        try {
+            Asigurare createdAsigurare = asigurareService.createAsigurareForMasina(masinaId, asigurare);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdAsigurare);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAsigurare(@PathVariable Long id, @RequestBody Asigurare asigurare) {
         try {
