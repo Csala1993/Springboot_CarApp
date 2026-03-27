@@ -17,6 +17,7 @@ public class MasinaDetailDTO {
     private Integer kilometraj;
     private Asigurare asigurare;
     private Rovinieta rovinieta;
+    // no dto s insdie other dtos
     private List<IstoricServiceSimpleDTO> istoricService;
     private ITP itp;
     private List<IstoricInvestitiiSimpleDTO> istoricInvestitii;

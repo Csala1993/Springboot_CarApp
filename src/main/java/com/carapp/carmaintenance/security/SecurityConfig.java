@@ -54,7 +54,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // login și register public
-                        .requestMatchers("/api/users/login", "/api/users").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users").permitAll()
 
                         // doar ADMIN poate șterge useri
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
