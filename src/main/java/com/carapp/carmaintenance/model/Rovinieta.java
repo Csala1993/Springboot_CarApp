@@ -3,6 +3,8 @@ package com.carapp.carmaintenance.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
+import jakarta.persistence.Transient;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "roviniete")
@@ -122,5 +124,10 @@ public class Rovinieta {
             return 0;
         }
         return java.time.temporal.ChronoUnit.DAYS.between(astazi, dataExpirare);
+    }
+
+    @Transient
+    public long getZileRamase() {
+        return ChronoUnit.DAYS.between(LocalDate.now(), dataExpirare);
     }
 }

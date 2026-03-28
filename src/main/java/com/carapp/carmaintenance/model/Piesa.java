@@ -75,4 +75,6 @@ public class Piesa {
     public void setServicii(List<IstoricService> servicii) {
         this.servicii = servicii;
     }
+
+
 }

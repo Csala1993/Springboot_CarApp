@@ -9,6 +9,7 @@ import com.carapp.carmaintenance.model.Piesa;
 import com.carapp.carmaintenance.repository.IstoricInvestitiiRepository;
 import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.PiesaRepository;
+import com.carapp.carmaintenance.dto.PiesaRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,12 +42,19 @@ public class IstoricInvestitiiService {
         inv.setMasina(masina);
 
 
-        if (dto.getPiesaIds() != null && !dto.getPiesaIds().isEmpty()) {
-            List<Piesa> piese = piesaRepository.findAllById(dto.getPiesaIds());
-            if (piese.size() != dto.getPiesaIds().size()) {
-                throw new RuntimeException("Unele piese nu au fost găsite (ID invalid).");
+        if (dto.getPiese() != null && !dto.getPiese().isEmpty()) {
+            for (PiesaRequestDTO p : dto.getPiese()) {
+                Piesa piesa = piesaRepository
+                        .findByNumeIgnoreCaseAndDistribuitor(p.getNume(), p.getDistribuitor())
+                        .orElseGet(() -> {
+                            Piesa nouaPiesa = new Piesa();
+                            nouaPiesa.setNume(p.getNume());
+                            nouaPiesa.setPret(p.getPret());
+                            nouaPiesa.setDistribuitor(p.getDistribuitor());
+                            return piesaRepository.save(nouaPiesa);
+                        });
+                inv.adaugaPiesa(piesa);
             }
-            piese.forEach(inv::adaugaPiesa);
         }
 
         inv.calculeazaCostTotal();

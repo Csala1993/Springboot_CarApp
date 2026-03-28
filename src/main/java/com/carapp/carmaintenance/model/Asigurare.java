@@ -3,6 +3,8 @@ package com.carapp.carmaintenance.model;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
+import jakarta.persistence.Transient;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "asigurari")
@@ -104,5 +106,10 @@ public class Asigurare {
     public boolean esteValida() {
         LocalDate astazi = LocalDate.now();
         return !astazi.isBefore(dataInceput) && !astazi.isAfter(dataIncheiere);
+    }
+
+    @Transient
+    public long getZileRamase() {
+        return ChronoUnit.DAYS.between(LocalDate.now(), dataIncheiere);
     }
 }

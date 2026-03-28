@@ -12,6 +12,7 @@ import com.carapp.carmaintenance.repository.PiesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.carapp.carmaintenance.dto.PiesaRequestDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,26 +43,33 @@ public class IstoricServiceService {
     }
 
     @Transactional
-    public IstoricService createService(Long masinaId, IstoricService service, List<Long> pieseIds) {
+    public IstoricService createService(Long masinaId, IstoricService service, List<PiesaRequestDTO> pieseRequest) {
         Masina masina = masinaRepository.findById(masinaId)
                 .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
 
         service.setMasina(masina);
 
-        if (pieseIds != null && !pieseIds.isEmpty()) {
-            for (Long piesaId : pieseIds) {
-                Piesa piesa = piesaRepository.findById(piesaId)
-                        .orElseThrow(() -> new RuntimeException("Piesa cu ID " + piesaId + " nu a fost găsită!"));
+        if (pieseRequest != null && !pieseRequest.isEmpty()) {
+            for (PiesaRequestDTO dto : pieseRequest) {
+                Piesa piesa = piesaRepository
+                        .findByNumeIgnoreCaseAndDistribuitor(dto.getNume(), dto.getDistribuitor())
+                        .orElseGet(() -> {
+                            Piesa nouaPiesa = new Piesa();
+                            nouaPiesa.setNume(dto.getNume());
+                            nouaPiesa.setPret(dto.getPret());
+                            nouaPiesa.setDistribuitor(dto.getDistribuitor());
+                            return piesaRepository.save(nouaPiesa);
+                        });
                 service.adaugaPiesa(piesa);
             }
         }
 
-        service.calculeazaCostTotal(); // include manopera + piese
+        service.calculeazaCostTotal();
         return istoricServiceRepository.save(service);
     }
 
     @Transactional
-    public IstoricService updateService(Long id, IstoricService serviceDetails, List<Long> pieseIds) {
+    public IstoricService updateService(Long id, IstoricService serviceDetails, List<PiesaRequestDTO> pieseRequest) {
         IstoricService service = istoricServiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service-ul nu a fost găsit!"));
 
@@ -69,18 +77,25 @@ public class IstoricServiceService {
         service.setKilometrajLaService(serviceDetails.getKilometrajLaService());
         service.setDescriere(serviceDetails.getDescriere());
         service.setServiceAuto(serviceDetails.getServiceAuto());
-        service.setManopera(serviceDetails.getManopera()); // ADĂUGAT
+        service.setManopera(serviceDetails.getManopera());
 
-        if (pieseIds != null) {
+        if (pieseRequest != null) {
             service.getPieseSchimbate().clear();
-            for (Long piesaId : pieseIds) {
-                Piesa piesa = piesaRepository.findById(piesaId)
-                        .orElseThrow(() -> new RuntimeException("Piesa cu ID " + piesaId + " nu a fost găsită!"));
+            for (PiesaRequestDTO p : pieseRequest) {
+                Piesa piesa = piesaRepository
+                        .findByNumeIgnoreCaseAndDistribuitor(p.getNume(), p.getDistribuitor())
+                        .orElseGet(() -> {
+                            Piesa nouaPiesa = new Piesa();
+                            nouaPiesa.setNume(p.getNume());
+                            nouaPiesa.setPret(p.getPret());
+                            nouaPiesa.setDistribuitor(p.getDistribuitor());
+                            return piesaRepository.save(nouaPiesa);
+                        });
                 service.adaugaPiesa(piesa);
             }
         }
 
-        service.calculeazaCostTotal(); // include manopera + piese
+        service.calculeazaCostTotal();
         return istoricServiceRepository.save(service);
     }
 

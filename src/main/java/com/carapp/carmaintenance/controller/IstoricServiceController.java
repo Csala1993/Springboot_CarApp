@@ -46,10 +46,10 @@ public class IstoricServiceController {
             service.setKilometrajLaService(dto.getKilometrajLaService());
             service.setDescriere(dto.getDescriere());
             service.setServiceAuto(dto.getServiceAuto());
-            service.setManopera(dto.getManopera()); // ADĂUGAT
+            service.setManopera(dto.getManopera());
 
             IstoricService createdService = istoricServiceService.createService(
-                    masinaId, service, dto.getPieseIds());
+                    masinaId, service, dto.getPiese()); // <- corect
             return ResponseEntity.status(HttpStatus.CREATED).body(createdService);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Eroare: " + e.getMessage());
@@ -66,10 +66,10 @@ public class IstoricServiceController {
             service.setKilometrajLaService(dto.getKilometrajLaService());
             service.setDescriere(dto.getDescriere());
             service.setServiceAuto(dto.getServiceAuto());
-            service.setManopera(dto.getManopera()); // ADĂUGAT
+            service.setManopera(dto.getManopera());
 
             IstoricService updatedService = istoricServiceService.updateService(
-                    id, service, dto.getPieseIds());
+                    id, service, dto.getPiese()); // <- era getPieseIds()
             return ResponseEntity.ok(updatedService);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Eroare: " + e.getMessage());

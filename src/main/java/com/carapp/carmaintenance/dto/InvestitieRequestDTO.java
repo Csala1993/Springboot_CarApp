@@ -8,7 +8,7 @@ public class InvestitieRequestDTO {
     private String titlu;
     private String descriere;
     private Double manopera;
-    private List<Long> piesaIds;
+    private List<PiesaRequestDTO> piese; // <- înlocuiește List<Long> piesaIds
 
     public LocalDate getDataInvestitie() { return dataInvestitie; }
     public void setDataInvestitie(LocalDate dataInvestitie) { this.dataInvestitie = dataInvestitie; }
@@ -22,6 +22,6 @@ public class InvestitieRequestDTO {
     public Double getManopera() { return manopera; }
     public void setManopera(Double manopera) { this.manopera = manopera; }
 
-    public List<Long> getPiesaIds() { return piesaIds; }
-    public void setPiesaIds(List<Long> piesaIds) { this.piesaIds = piesaIds; }
+    public List<PiesaRequestDTO> getPiese() { return piese; }
+    public void setPiese(List<PiesaRequestDTO> piese) { this.piese = piese; }
 }
