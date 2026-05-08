@@ -29,6 +29,10 @@ public class IstoricInvestitii {
 
     @Column
     private Double manopera = 0.0;
+
+    @Column
+    private Integer kilometrajLaInvestitie;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "masina_id", nullable = false)
     @JsonIgnore
@@ -84,6 +88,14 @@ public class IstoricInvestitii {
                 .sum();
         double man = this.manopera != null ? this.manopera : 0.0;
         this.costTotal = sumaPiese + man;
+    }
+
+    public Integer getKilometrajLaInvestitie() {
+        return kilometrajLaInvestitie;
+    }
+
+    public void setKilometrajLaInvestitie(Integer kilometrajLaInvestitie) {
+        this.kilometrajLaInvestitie = kilometrajLaInvestitie;
     }
 
 

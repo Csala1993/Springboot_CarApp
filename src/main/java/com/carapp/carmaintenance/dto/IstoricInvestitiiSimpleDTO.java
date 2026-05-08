@@ -10,18 +10,22 @@ public class IstoricInvestitiiSimpleDTO {
     private String descriere;
     private Double costTotal;
     private Double manopera;
+    private Integer kilometrajLaInvestitie;
+
 
 
     private Set<PiesaMiniDTO> piese;
 
     public IstoricInvestitiiSimpleDTO(Long id, LocalDate dataInvestitie, String titlu, String descriere,
-                                      Double costTotal, Double manopera, Set<PiesaMiniDTO> piese) {
+                                      Double costTotal, Double manopera, Integer kilometrajLaInvestitie,
+                                      Set<PiesaMiniDTO> piese) {
         this.id = id;
         this.dataInvestitie = dataInvestitie;
         this.titlu = titlu;
         this.descriere = descriere;
         this.costTotal = costTotal;
         this.manopera = manopera;
+        this.kilometrajLaInvestitie = kilometrajLaInvestitie;
         this.piese = piese;
     }
 
@@ -32,4 +36,6 @@ public class IstoricInvestitiiSimpleDTO {
     public Double getCostTotal() { return costTotal; }
     public Double getManopera() { return manopera; }
     public Set<PiesaMiniDTO> getPiese() { return piese; }
+    public Integer getKilometrajLaInvestitie() { return kilometrajLaInvestitie; }
+
 }

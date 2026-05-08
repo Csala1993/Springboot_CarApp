@@ -1,5 +1,6 @@
 package com.carapp.carmaintenance.controller;
 
+import com.carapp.carmaintenance.dto.ErrorResponseDTO;
 import com.carapp.carmaintenance.dto.LoginRequest;
 import com.carapp.carmaintenance.dto.LoginResponse;
 import com.carapp.carmaintenance.dto.RegisterRequestDTO;
@@ -8,6 +9,8 @@ import com.carapp.carmaintenance.service.AuthService;
 import com.carapp.carmaintenance.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,9 +35,10 @@ public class AuthController {
         try {
             LoginResponse response = authService.login(request);
             return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body(e.getClass().getName() + ": " + e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(401)
+                    .body(new ErrorResponseDTO("Email sau parola incorecta"));
         }
     }
 

@@ -39,6 +39,13 @@ public class IstoricInvestitiiService {
         inv.setDescriere(dto.getDescriere());
         inv.setManopera(dto.getManopera() != null ? dto.getManopera() : 0.0);
 
+        inv.setKilometrajLaInvestitie(dto.getKilometrajLaInvestitie());
+
+        if (dto.getKilometrajLaInvestitie() != null &&
+                (masina.getKilometraj() == null || dto.getKilometrajLaInvestitie() > masina.getKilometraj())) {
+            masina.setKilometraj(dto.getKilometrajLaInvestitie());
+        }
+
         inv.setMasina(masina);
 
 
@@ -83,9 +90,11 @@ public class IstoricInvestitiiService {
                 inv.getDataInvestitie(),
                 inv.getTitlu(),
                 inv.getDescriere(),
-                inv.getManopera(),
                 inv.getCostTotal(),
+                inv.getManopera(),
+                inv.getKilometrajLaInvestitie(),
                 piese
         );
+
     }
 }

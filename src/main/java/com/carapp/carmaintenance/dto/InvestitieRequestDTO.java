@@ -8,7 +8,9 @@ public class InvestitieRequestDTO {
     private String titlu;
     private String descriere;
     private Double manopera;
-    private List<PiesaRequestDTO> piese; // <- înlocuiește List<Long> piesaIds
+    private List<PiesaRequestDTO> piese; //
+    private Integer kilometrajLaInvestitie;
+
 
     public LocalDate getDataInvestitie() { return dataInvestitie; }
     public void setDataInvestitie(LocalDate dataInvestitie) { this.dataInvestitie = dataInvestitie; }
@@ -24,4 +26,9 @@ public class InvestitieRequestDTO {
 
     public List<PiesaRequestDTO> getPiese() { return piese; }
     public void setPiese(List<PiesaRequestDTO> piese) { this.piese = piese; }
+
+    public Integer getKilometrajLaInvestitie() { return kilometrajLaInvestitie; }
+
+    public void setKilometrajLaInvestitie(Integer kilometrajLaInvestitie) { this.kilometrajLaInvestitie = kilometrajLaInvestitie; }
+
 }

@@ -36,10 +36,8 @@ public class AuthService {
 
         // Verifică dacă userul există
         User user = userRepository.findByEmail(request.username)
-                .orElseThrow(() -> {
-                    System.out.println("❌ User not found: " + request.username);
-                    return new RuntimeException("User not found");
-                });
+                .orElseThrow(() -> new RuntimeException("Credentiale invalide"));
+
 
         System.out.println("✅ User found: " + user.getEmail() + ", Role: " + user.getRole());
         //System.out.println("🔑 Password in DB starts with: " + user.getParola().substring(0, 10));

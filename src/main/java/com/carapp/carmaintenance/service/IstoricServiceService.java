@@ -49,6 +49,12 @@ public class IstoricServiceService {
 
         service.setMasina(masina);
 
+        if (service.getKilometrajLaService() != null &&
+                (masina.getKilometraj() == null || service.getKilometrajLaService() > masina.getKilometraj())) {
+            masina.setKilometraj(service.getKilometrajLaService());
+        }
+
+
         if (pieseRequest != null && !pieseRequest.isEmpty()) {
             for (PiesaRequestDTO dto : pieseRequest) {
                 Piesa piesa = piesaRepository

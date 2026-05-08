@@ -124,11 +124,13 @@ public class MasinaService {
                         inv.getDescriere(),
                         inv.getCostTotal(),
                         inv.getManopera(),
+                        inv.getKilometrajLaInvestitie(),
                         inv.getPiese().stream()
                                 .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
                                 .collect(Collectors.toSet())
                 ))
                 .collect(Collectors.toList());
+
 
         MasinaDetailDTO dto = new MasinaDetailDTO(
                 masina.getId(),
