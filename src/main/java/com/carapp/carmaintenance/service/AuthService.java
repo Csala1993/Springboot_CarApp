@@ -74,7 +74,10 @@ public class AuthService {
                 token,
                 user.getEmail(),
                 user.getRole().name(),
-                user.getId()
+                user.getId(),
+                user.getNume()
         );
+
+
     }
 }

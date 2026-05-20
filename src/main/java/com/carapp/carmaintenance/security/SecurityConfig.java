@@ -65,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/service/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/investitii/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/notificari/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/piese-search/**").hasAnyRole("USER", "ADMIN")
+
 
 
                         // orice altceva
