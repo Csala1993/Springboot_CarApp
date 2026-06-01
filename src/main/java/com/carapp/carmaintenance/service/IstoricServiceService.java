@@ -81,6 +81,14 @@ public class IstoricServiceService {
 
         service.setDataService(serviceDetails.getDataService());
         service.setKilometrajLaService(serviceDetails.getKilometrajLaService());
+
+        Masina masina = service.getMasina();
+        Integer kmNou = serviceDetails.getKilometrajLaService();
+
+        if (kmNou != null && (masina.getKilometraj() == null || kmNou > masina.getKilometraj())) {
+            masina.setKilometraj(kmNou);
+        }
+
         service.setDescriere(serviceDetails.getDescriere());
         service.setServiceAuto(serviceDetails.getServiceAuto());
         service.setManopera(serviceDetails.getManopera());

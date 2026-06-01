@@ -10,8 +10,8 @@ public class NotificareScheduler {
     @Autowired
     private NotificareService notificareService;
 
-    // Rulează în fiecare zi la miezul nopții
-    @Scheduled(cron = "0 0 0 * * *")
+
+    @Scheduled(cron = "0 0 16 * * *")
     public void verificaDocumenteZilnic() {
         System.out.println("Verificare documente...");
         notificareService.verificaDocumente();

@@ -31,6 +31,9 @@ public class Masina {
     @Column
     private Integer kilometraj;
 
+    @Column
+    private String codMotor;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
@@ -177,6 +180,14 @@ public class Masina {
         if (itp != null) {
             itp.setMasina(this);
         }
+    }
+
+    public String getCodMotor() {
+        return codMotor;
+    }
+
+    public void setCodMotor(String codMotor) {
+        this.codMotor = codMotor;
     }
 
     @OneToMany(mappedBy = "masina", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -102,7 +102,7 @@ public class MasinaController {
     public ResponseEntity<?> deleteMasina(@PathVariable Long id) {
         try {
             masinaService.deleteMasina(id);
-            return ResponseEntity.ok("Mașină ștearsă cu succes!");
+            return ResponseEntity.ok("Masina stearsa cu succes!");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

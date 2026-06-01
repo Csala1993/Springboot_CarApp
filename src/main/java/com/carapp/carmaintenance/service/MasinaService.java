@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.carapp.carmaintenance.dto.MasinaListDTO;
 import com.carapp.carmaintenance.dto.IstoricInvestitiiSimpleDTO;
 import com.carapp.carmaintenance.dto.PiesaMiniDTO;
+import com.carapp.carmaintenance.model.Notificare;
+import com.carapp.carmaintenance.repository.NotificareRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +30,9 @@ public class MasinaService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificareRepository notificareRepository;
 
     public List<Masina> getAllMasini() {
         return masinaRepository.findAll();
@@ -89,6 +94,7 @@ public class MasinaService {
         }
         if (masinaDetails.getItp() != null) {
             masina.setItp(masinaDetails.getItp());
+
         }
 
         return masinaRepository.save(masina);
@@ -140,6 +146,7 @@ public class MasinaService {
                 masina.getNumarInmatriculare(),
                 masina.getVin(),
                 masina.getKilometraj(),
+                masina.getCodMotor(),
                 masina.getAsigurare(),
                 masina.getRovinieta(),
                 masina.getItp(),
@@ -172,7 +179,7 @@ public class MasinaService {
     @Transactional
     public Masina adaugaItpLaMasina(Long masinaId, LocalDate dataEfectuare) {
         Masina masina = masinaRepository.findById(masinaId)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+                .orElseThrow(() -> new RuntimeException("Masina nu a fost gasita!"));
 
         if (dataEfectuare == null) {
             throw new RuntimeException("dataEfectuare este obligatorie!");
@@ -189,7 +196,21 @@ public class MasinaService {
         itp.setDataExpirare(dataEfectuare.plusYears(aniValabilitate));
 
         masina.setItp(itp);
+
+        notificareRepository.deleteByUserIdAndTip(
+                masina.getUser().getId(),
+                Notificare.TipNotificare.ITP
+        );
+
         return masinaRepository.save(masina);
+    }
+
+    @Transactional
+    public void stergeMasina(Long masinaId, Long userId) {
+        Masina masina = masinaRepository.findByIdAndUserId(masinaId, userId)
+                .orElseThrow(() -> new RuntimeException("Masina nu a fost gasita pentru acest user."));
+
+        masinaRepository.delete(masina);
     }
 
     public MasinaListDTO convertToListDTO(Masina masina) {

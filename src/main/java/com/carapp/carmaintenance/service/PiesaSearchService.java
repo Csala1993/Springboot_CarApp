@@ -19,16 +19,25 @@ public class PiesaSearchService {
             .baseUrl("https://serpapi.com")
             .build();
 
-    public List<PiesaSearchResultDTO> search(String query) {
+    public List<PiesaSearchResultDTO> search(String query, String marca, String model, String codMotor) {
         if (query == null || query.isBlank()) {
             return List.of();
         }
+
+        String enhancedQuery = String.join(" ",
+                query,
+                marca != null ? marca : "",
+                model != null ? model : "",
+                codMotor != null ? codMotor : ""
+        ).trim();
+
+        System.out.println("SERPAPI SEARCH QUERY: " + enhancedQuery);
 
         JsonNode response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search")
                         .queryParam("engine", "google_shopping")
-                        .queryParam("q", query)
+                        .queryParam("q", enhancedQuery)
                         .queryParam("gl", "ro")
                         .queryParam("hl", "ro")
                         .queryParam("api_key", apiKey)

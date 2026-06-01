@@ -20,7 +20,12 @@ public class PiesaSearchController {
     }
 
     @GetMapping
-    public List<PiesaSearchResultDTO> search(@RequestParam String q) {
-        return piesaSearchService.search(q);
+    public List<PiesaSearchResultDTO> search(
+            @RequestParam String q,
+            @RequestParam(required = false) String marca,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false) String codMotor
+    ) {
+        return piesaSearchService.search(q, marca, model, codMotor);
     }
 }

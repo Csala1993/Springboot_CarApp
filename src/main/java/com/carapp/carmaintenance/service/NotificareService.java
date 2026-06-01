@@ -5,6 +5,7 @@ import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.NotificareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -24,6 +25,7 @@ public class NotificareService {
 
     private static final int[] ZILE_NOTIFICARE = {60, 30, 15, 7, 1};
 
+    @Transactional
     public void verificaDocumente() {
         List<Masina> toateMasinile = masinaRepository.findAll();
 

@@ -17,7 +17,7 @@ public class MasinaDetailDTO {
     private Integer kilometraj;
     private Asigurare asigurare;
     private Rovinieta rovinieta;
-    // no dto s insdie other dtos
+    private String codMotor;
     private List<IstoricServiceSimpleDTO> istoricService;
     private ITP itp;
     private List<IstoricInvestitiiSimpleDTO> istoricInvestitii;
@@ -28,6 +28,7 @@ public class MasinaDetailDTO {
 
     public MasinaDetailDTO(Long id, String marca, String model, Integer an,
                            String numarInmatriculare, String vin, Integer kilometraj,
+                           String codMotor,
                            Asigurare asigurare, Rovinieta rovinieta, ITP itp,
                            List<IstoricServiceSimpleDTO> istoricService) {
         this.id = id;
@@ -37,6 +38,7 @@ public class MasinaDetailDTO {
         this.numarInmatriculare = numarInmatriculare;
         this.vin = vin;
         this.kilometraj = kilometraj;
+        this.codMotor = codMotor;
         this.asigurare = asigurare;
         this.rovinieta = rovinieta;
         this.itp = itp;
@@ -76,6 +78,14 @@ public class MasinaDetailDTO {
 
     public ITP getItp() { return itp; }
     public void setItp(ITP itp) { this.itp = itp; }
+
+    public String getCodMotor() {
+        return codMotor;
+    }
+
+    public void setCodMotor(String codMotor) {
+        this.codMotor = codMotor;
+    }
 
     public List<IstoricInvestitiiSimpleDTO> getIstoricInvestitii() { return istoricInvestitii; }
     public void setIstoricInvestitii(List<IstoricInvestitiiSimpleDTO> istoricInvestitii) { this.istoricInvestitii = istoricInvestitii; }

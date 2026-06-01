@@ -7,8 +7,10 @@ import com.carapp.carmaintenance.dto.RegisterRequestDTO;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.service.AuthService;
 import com.carapp.carmaintenance.service.UserService;
+import com.carapp.carmaintenance.service.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 
 
@@ -19,10 +21,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final EmailService emailService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService, EmailService emailService) {
         this.authService = authService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
     @GetMapping("/test")
@@ -42,6 +46,7 @@ public class AuthController {
         }
     }
 
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO request) {
         try {
@@ -50,7 +55,9 @@ public class AuthController {
             user.setEmail(request.getEmail());
             user.setParola(request.getParola());
 
-            userService.createUser(user); // hash-ul si verificarea emailului se fac aici
+            userService.createUser(user);
+            emailService.trimiteEmailBunVenit(user.getEmail(), user.getNume());
+
             return ResponseEntity.ok("Cont creat cu succes!");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
