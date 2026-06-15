@@ -7,6 +7,7 @@ import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.carapp.carmaintenance.dto.AdminUserDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,4 +82,18 @@ public class UserService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public List<AdminUserDTO> getAllUsersForAdmin() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> new AdminUserDTO(
+                        user.getId(),
+                        user.getNume(),
+                        user.getEmail(),
+                        user.getRole().name()
+                ))
+                .toList();
+    }
+
+
 }

@@ -55,7 +55,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // login și register public
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
 
                         // doar ADMIN poate șterge useri
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")

@@ -1,12 +1,11 @@
 package com.carapp.carmaintenance.controller;
 
+import com.carapp.carmaintenance.dto.AdminUserDTO;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.carapp.carmaintenance.dto.UserDTO;
 
 import java.util.List;
 
@@ -18,30 +17,17 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
+    // Lista folosita de pagina de administrare
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsersDto());
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody User user) {
-        try {
-            User createdUser = userService.createUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<List<AdminUserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsersForAdmin());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<?> updateUser(
+            @PathVariable Long id,
+            @RequestBody User user
+    ) {
         try {
             User updatedUser = userService.updateUser(id, user);
             return ResponseEntity.ok(updatedUser);
@@ -54,7 +40,7 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);
-            return ResponseEntity.ok("Utilizator șters cu succes!");
+            return ResponseEntity.ok("Utilizator sters cu succes.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
