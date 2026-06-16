@@ -3,7 +3,7 @@ package com.carapp.carmaintenance.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
-public class IstoricInvestitiiSimpleDTO {
+public class IstoricInvestitiiResponseDTO {
     private Long id;
     private LocalDate dataInvestitie;
     private String titlu;
@@ -14,11 +14,11 @@ public class IstoricInvestitiiSimpleDTO {
 
 
 
-    private Set<PiesaMiniDTO> piese;
+    private Set<PiesaResponseDTO> piese;
 
-    public IstoricInvestitiiSimpleDTO(Long id, LocalDate dataInvestitie, String titlu, String descriere,
-                                      Double costTotal, Double manopera, Integer kilometrajLaInvestitie,
-                                      Set<PiesaMiniDTO> piese) {
+    public IstoricInvestitiiResponseDTO(Long id, LocalDate dataInvestitie, String titlu, String descriere,
+                                        Double costTotal, Double manopera, Integer kilometrajLaInvestitie,
+                                        Set<PiesaResponseDTO> piese) {
         this.id = id;
         this.dataInvestitie = dataInvestitie;
         this.titlu = titlu;
@@ -35,7 +35,7 @@ public class IstoricInvestitiiSimpleDTO {
     public String getDescriere() { return descriere; }
     public Double getCostTotal() { return costTotal; }
     public Double getManopera() { return manopera; }
-    public Set<PiesaMiniDTO> getPiese() { return piese; }
+    public Set<PiesaResponseDTO> getPiese() { return piese; }
     public Integer getKilometrajLaInvestitie() { return kilometrajLaInvestitie; }
 
 }

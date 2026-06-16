@@ -4,11 +4,13 @@ import com.carapp.carmaintenance.model.Notificare;
 import com.carapp.carmaintenance.model.Notificare.TipNotificare;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
 import java.util.List;
 
 @Repository
 public interface NotificareRepository extends JpaRepository<Notificare, Long> {
+    Optional<Notificare> findByIdAndUserId(Long id, Long userId);
     List<Notificare> findByUserIdOrderByDataCreareDesc(Long userId);
     List<Notificare> findByUserIdAndCititaFalse(Long userId);
     long countByUserIdAndCititaFalse(Long userId);

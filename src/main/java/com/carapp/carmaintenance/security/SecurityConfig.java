@@ -53,27 +53,42 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // login și register public
+                        // Endpoint-uri publice
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                        // Administrare
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users", "/api/users/**").hasRole("ADMIN")
 
-                        // doar ADMIN poate șterge useri
-                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+                        // Liste globale, accesibile numai administratorului
+                        .requestMatchers(HttpMethod.GET, "/api/masini").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/service").hasRole("ADMIN")
 
-                        // endpoint-uri masini
-                        .requestMatchers("/api/masini/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/service/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/investitii/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/notificari/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/piese-search/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/api/asigurari/**").hasAnyRole("USER", "ADMIN")
+                        // PDF-ul asigurării trebuie să rămână disponibil utilizatorilor
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/asigurari/extract-pdf"
+                        ).hasAnyRole("USER", "ADMIN")
 
+                        // Controllere generale care expun toate înregistrările
+                        .requestMatchers("/api/asigurari/**").hasRole("ADMIN")
+                        .requestMatchers("/api/roviniete/**").hasRole("ADMIN")
+                        .requestMatchers("/api/piese/**").hasRole("ADMIN")
 
+                        // Operații făcute în contextul utilizatorului autentificat
+                        .requestMatchers(HttpMethod.POST, "/api/masini")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/masini/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/service/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/investitii/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/notificari/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/piese-search/**")
+                        .hasAnyRole("USER", "ADMIN")
 
-                        // orice altceva
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

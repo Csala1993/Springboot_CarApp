@@ -18,9 +18,9 @@ public class MasinaDetailDTO {
     private Asigurare asigurare;
     private Rovinieta rovinieta;
     private String codMotor;
-    private List<IstoricServiceSimpleDTO> istoricService;
+    private List<IstoricServiceSummaryDTO> istoricService;
     private ITP itp;
-    private List<IstoricInvestitiiSimpleDTO> istoricInvestitii;
+    private List<IstoricInvestitiiResponseDTO> istoricInvestitii;
 
 
     // Constructori
@@ -30,7 +30,7 @@ public class MasinaDetailDTO {
                            String numarInmatriculare, String vin, Integer kilometraj,
                            String codMotor,
                            Asigurare asigurare, Rovinieta rovinieta, ITP itp,
-                           List<IstoricServiceSimpleDTO> istoricService) {
+                           List<IstoricServiceSummaryDTO> istoricService) {
         this.id = id;
         this.marca = marca;
         this.model = model;
@@ -73,8 +73,8 @@ public class MasinaDetailDTO {
     public Rovinieta getRovinieta() { return rovinieta; }
     public void setRovinieta(Rovinieta rovinieta) { this.rovinieta = rovinieta; }
 
-    public List<IstoricServiceSimpleDTO> getIstoricService() { return istoricService; }
-    public void setIstoricService(List<IstoricServiceSimpleDTO> istoricService) { this.istoricService = istoricService; }
+    public List<IstoricServiceSummaryDTO> getIstoricService() { return istoricService; }
+    public void setIstoricService(List<IstoricServiceSummaryDTO> istoricService) { this.istoricService = istoricService; }
 
     public ITP getItp() { return itp; }
     public void setItp(ITP itp) { this.itp = itp; }
@@ -87,7 +87,7 @@ public class MasinaDetailDTO {
         this.codMotor = codMotor;
     }
 
-    public List<IstoricInvestitiiSimpleDTO> getIstoricInvestitii() { return istoricInvestitii; }
-    public void setIstoricInvestitii(List<IstoricInvestitiiSimpleDTO> istoricInvestitii) { this.istoricInvestitii = istoricInvestitii; }
+    public List<IstoricInvestitiiResponseDTO> getIstoricInvestitii() { return istoricInvestitii; }
+    public void setIstoricInvestitii(List<IstoricInvestitiiResponseDTO> istoricInvestitii) { this.istoricInvestitii = istoricInvestitii; }
 
 }

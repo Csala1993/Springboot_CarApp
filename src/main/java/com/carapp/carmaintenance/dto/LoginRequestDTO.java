@@ -1,6 +1,6 @@
 package com.carapp.carmaintenance.dto;
 
-public class LoginRequest {
+public class LoginRequestDTO {
     public String username;
     public String password;
 }

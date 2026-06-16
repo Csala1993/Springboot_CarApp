@@ -1,7 +1,7 @@
 package com.carapp.carmaintenance.service;
 
-import com.carapp.carmaintenance.dto.LoginRequest;
-import com.carapp.carmaintenance.dto.LoginResponse;
+import com.carapp.carmaintenance.dto.LoginRequestDTO;
+import com.carapp.carmaintenance.dto.LoginResponseDTO;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.UserRepository;
 import com.carapp.carmaintenance.security.JwtTokenProvider;
@@ -10,8 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class AuthService {
@@ -31,7 +29,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponseDTO login(LoginRequestDTO request) {
         System.out.println("🔐 Login attempt for: " + request.username);
 
         // Verifică dacă userul există
@@ -70,7 +68,7 @@ public class AuthService {
 
        // Optional<User> utilizator= userRepository.findByEmail(utilizator.getEmail());
 
-        return new LoginResponse(
+        return new LoginResponseDTO(
                 token,
                 user.getEmail(),
                 user.getRole().name(),

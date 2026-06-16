@@ -19,9 +19,12 @@ public class AsigurareService {
     @Autowired
     private MasinaRepository masinaRepository;
 
+    @Autowired
+    private MasinaService masinaService;
+
     public Asigurare createAsigurareForMasina(Long masinaId, Asigurare asigurare) {
-        Masina masina = masinaRepository.findById(masinaId)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        Masina masina = masinaService.getMasinaCurenta(masinaId);
 
         if (asigurare.getDataInceput().isAfter(asigurare.getDataIncheiere())) {
             throw new RuntimeException("Data de început nu poate fi după data de încheiere!");

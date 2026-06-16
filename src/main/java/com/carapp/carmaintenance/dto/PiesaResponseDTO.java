@@ -1,12 +1,12 @@
 package com.carapp.carmaintenance.dto;
 
-public class PiesaMiniDTO {
+public class PiesaResponseDTO {
     private Long id;
     private String nume;
     private Double pret;
 
-    public PiesaMiniDTO() {}
-    public PiesaMiniDTO(Long id, String nume, Double pret) {
+    public PiesaResponseDTO() {}
+    public PiesaResponseDTO(Long id, String nume, Double pret) {
         this.id = id; this.nume = nume; this.pret = pret;
     }
 

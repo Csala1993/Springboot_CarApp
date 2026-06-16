@@ -1,6 +1,6 @@
 package com.carapp.carmaintenance.controller;
 
-import com.carapp.carmaintenance.dto.IstoricServiceDTO;
+import com.carapp.carmaintenance.dto.IstoricServiceResponseDTO;
 import com.carapp.carmaintenance.dto.IstoricServiceRequestDTO;
 import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.service.IstoricServiceService;
@@ -20,17 +20,17 @@ public class IstoricServiceController {
     private IstoricServiceService istoricServiceService;
 
     @GetMapping
-    public ResponseEntity<List<IstoricServiceDTO>> getAllServices() {
+    public ResponseEntity<List<IstoricServiceResponseDTO>> getAllServices() {
         return ResponseEntity.ok(istoricServiceService.getAllServicesDTO());
     }
 
     @GetMapping("/masina/{masinaId}")
-    public ResponseEntity<List<IstoricServiceDTO>> getServicesByMasina(@PathVariable Long masinaId) {
+    public ResponseEntity<List<IstoricServiceResponseDTO>> getServicesByMasina(@PathVariable Long masinaId) {
         return ResponseEntity.ok(istoricServiceService.getServicesByMasinaIdDTO(masinaId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<IstoricServiceDTO> getServiceById(@PathVariable Long id) {
+    public ResponseEntity<IstoricServiceResponseDTO> getServiceById(@PathVariable Long id) {
         return istoricServiceService.getServiceByIdDTO(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

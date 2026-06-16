@@ -3,7 +3,7 @@ package com.carapp.carmaintenance.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-public class IstoricServiceDTO {
+public class IstoricServiceResponseDTO {
     private Long id;
     private LocalDate dataService;
     private Integer kilometrajLaService;
@@ -12,13 +12,13 @@ public class IstoricServiceDTO {
     private Double costTotal;
     private MasinaDTO masina;
     private Double manopera;
-    private List<PiesaMiniDTO> pieseSchimbate;
+    private List<PiesaResponseDTO> pieseSchimbate;
 
-    public IstoricServiceDTO() {}
+    public IstoricServiceResponseDTO() {}
 
-    public IstoricServiceDTO(Long id, LocalDate dataService, Integer kilometrajLaService,
-                             String descriere, String serviceAuto, Double costTotal,
-                             Double manopera, MasinaDTO masina, List<PiesaMiniDTO> pieseSchimbate) {
+    public IstoricServiceResponseDTO(Long id, LocalDate dataService, Integer kilometrajLaService,
+                                     String descriere, String serviceAuto, Double costTotal,
+                                     Double manopera, MasinaDTO masina, List<PiesaResponseDTO> pieseSchimbate) {
         this.id = id;
         this.dataService = dataService;
         this.kilometrajLaService = kilometrajLaService;
@@ -46,6 +46,6 @@ public class IstoricServiceDTO {
     public void setCostTotal(Double costTotal) { this.costTotal = costTotal; }
     public MasinaDTO getMasina() { return masina; }
     public void setMasina(MasinaDTO masina) { this.masina = masina; }
-    public List<PiesaMiniDTO> getPieseSchimbate() { return pieseSchimbate; }
-    public void setPieseSchimbate(List<PiesaMiniDTO> pieseSchimbate) { this.pieseSchimbate = pieseSchimbate; }
+    public List<PiesaResponseDTO> getPieseSchimbate() { return pieseSchimbate; }
+    public void setPieseSchimbate(List<PiesaResponseDTO> pieseSchimbate) { this.pieseSchimbate = pieseSchimbate; }
 }

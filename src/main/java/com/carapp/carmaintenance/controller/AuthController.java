@@ -1,8 +1,8 @@
 package com.carapp.carmaintenance.controller;
 
 import com.carapp.carmaintenance.dto.ErrorResponseDTO;
-import com.carapp.carmaintenance.dto.LoginRequest;
-import com.carapp.carmaintenance.dto.LoginResponse;
+import com.carapp.carmaintenance.dto.LoginRequestDTO;
+import com.carapp.carmaintenance.dto.LoginResponseDTO;
 import com.carapp.carmaintenance.dto.RegisterRequestDTO;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.service.AuthService;
@@ -35,9 +35,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         try {
-            LoginResponse response = authService.login(request);
+            LoginResponseDTO response = authService.login(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity

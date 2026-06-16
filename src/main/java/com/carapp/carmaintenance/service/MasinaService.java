@@ -1,6 +1,6 @@
 package com.carapp.carmaintenance.service;
 
-import com.carapp.carmaintenance.dto.IstoricServiceSimpleDTO;
+import com.carapp.carmaintenance.dto.IstoricServiceSummaryDTO;
 import com.carapp.carmaintenance.dto.MasinaDetailDTO;
 import com.carapp.carmaintenance.model.ITP;
 import com.carapp.carmaintenance.model.Masina;
@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.carapp.carmaintenance.dto.MasinaListDTO;
-import com.carapp.carmaintenance.dto.IstoricInvestitiiSimpleDTO;
-import com.carapp.carmaintenance.dto.PiesaMiniDTO;
+import com.carapp.carmaintenance.dto.IstoricInvestitiiResponseDTO;
+import com.carapp.carmaintenance.dto.PiesaResponseDTO;
 import com.carapp.carmaintenance.model.Notificare;
 import com.carapp.carmaintenance.repository.NotificareRepository;
+import com.carapp.carmaintenance.model.Role;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,16 +35,25 @@ public class MasinaService {
     @Autowired
     private NotificareRepository notificareRepository;
 
+    @Autowired
+    private CurrentUserService currentUserService;
+
     public List<Masina> getAllMasini() {
+
         return masinaRepository.findAll();
     }
 
     public List<Masina> getMasiniByUserId(Long userId) {
+
         return masinaRepository.findByUserId(userId);
     }
 
     public Optional<Masina> getMasinaById(Long id) {
-        return masinaRepository.findById(id);
+        try {
+            return Optional.of(getMasinaCurenta(id));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
     }
 
     public List<MasinaDetailDTO> getMasiniByUserIdDTO(Long userId) {
@@ -76,8 +86,7 @@ public class MasinaService {
     }
 
     public Masina updateMasina(Long id, Masina masinaDetails) {
-        Masina masina = masinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+        Masina masina = getMasinaCurenta(id);
 
         masina.setMarca(masinaDetails.getMarca());
         masina.setModel(masinaDetails.getModel());
@@ -100,15 +109,15 @@ public class MasinaService {
         return masinaRepository.save(masina);
     }
 
+    @Transactional
     public void deleteMasina(Long id) {
-        Masina masina = masinaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+        Masina masina = getMasinaCurenta(id);
         masinaRepository.delete(masina);
     }
 
     public MasinaDetailDTO convertToDetailDTO(Masina masina) {
-        List<IstoricServiceSimpleDTO> istoricDTO = masina.getIstoricService().stream()
-                .map(service -> new IstoricServiceSimpleDTO(
+        List<IstoricServiceSummaryDTO> istoricDTO = masina.getIstoricService().stream()
+                .map(service -> new IstoricServiceSummaryDTO(
                         service.getId(),
                         service.getDataService(),
                         service.getKilometrajLaService(),
@@ -117,13 +126,13 @@ public class MasinaService {
                         service.getCostTotal(),
                         service.getManopera(), // ADĂUGAT
                         service.getPieseSchimbate().stream()
-                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+                                .map(p -> new PiesaResponseDTO(p.getId(), p.getNume(), p.getPret()))
                                 .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());
 
-        List<IstoricInvestitiiSimpleDTO> investitiiDTO = masina.getIstoricInvestitii().stream()
-                .map(inv -> new IstoricInvestitiiSimpleDTO(
+        List<IstoricInvestitiiResponseDTO> investitiiDTO = masina.getIstoricInvestitii().stream()
+                .map(inv -> new IstoricInvestitiiResponseDTO(
                         inv.getId(),
                         inv.getDataInvestitie(),
                         inv.getTitlu(),
@@ -132,7 +141,7 @@ public class MasinaService {
                         inv.getManopera(),
                         inv.getKilometrajLaInvestitie(),
                         inv.getPiese().stream()
-                                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+                                .map(p -> new PiesaResponseDTO(p.getId(), p.getNume(), p.getPret()))
                                 .collect(Collectors.toSet())
                 ))
                 .collect(Collectors.toList());
@@ -163,8 +172,8 @@ public class MasinaService {
 
     @Transactional
     public Masina adaugaRovinietaLaMasina(Long masinaId, LocalDate dataInceput, Rovinieta.DurataRovinieta durata) {
-        Masina masina = masinaRepository.findById(masinaId)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        Masina masina = getMasinaCurenta(masinaId);
 
         if (dataInceput == null || durata == null) {
             throw new RuntimeException("dataInceput și durata sunt obligatorii!");
@@ -178,8 +187,8 @@ public class MasinaService {
 
     @Transactional
     public Masina adaugaItpLaMasina(Long masinaId, LocalDate dataEfectuare) {
-        Masina masina = masinaRepository.findById(masinaId)
-                .orElseThrow(() -> new RuntimeException("Masina nu a fost gasita!"));
+
+        Masina masina = getMasinaCurenta(masinaId);
 
         if (dataEfectuare == null) {
             throw new RuntimeException("dataEfectuare este obligatorie!");
@@ -205,13 +214,6 @@ public class MasinaService {
         return masinaRepository.save(masina);
     }
 
-    @Transactional
-    public void stergeMasina(Long masinaId, Long userId) {
-        Masina masina = masinaRepository.findByIdAndUserId(masinaId, userId)
-                .orElseThrow(() -> new RuntimeException("Masina nu a fost gasita pentru acest user."));
-
-        masinaRepository.delete(masina);
-    }
 
     public MasinaListDTO convertToListDTO(Masina masina) {
         return new MasinaListDTO(
@@ -228,5 +230,23 @@ public class MasinaService {
         return masinaRepository.findAll().stream()
                 .map(this::convertToListDTO)
                 .toList();
+    }
+
+    public Masina getMasinaCurenta(Long masinaId) {
+        User user = currentUserService.getCurrentUser();
+
+        if (user.getRole() == Role.ADMIN) {
+            return masinaRepository.findById(masinaId)
+                    .orElseThrow(() ->
+                            new RuntimeException("Masina nu a fost gasita.")
+                    );
+        }
+
+        return masinaRepository.findByIdAndUserId(masinaId, user.getId())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Masina nu exista sau nu iti apartine."
+                        )
+                );
     }
 }

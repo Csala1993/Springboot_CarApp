@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.carapp.carmaintenance.dto.ITPRequestDTO;
 import com.carapp.carmaintenance.dto.MasinaListDTO;
+import com.carapp.carmaintenance.service.CurrentUserService;
 
 
 import java.util.List;
@@ -25,15 +26,21 @@ public class MasinaController {
     private MasinaService masinaService;
     @Autowired
     private AsigurareService asigurareService;
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @GetMapping
     public ResponseEntity<List<MasinaListDTO>> getAllMasini() {
         return ResponseEntity.ok(masinaService.getAllMasiniListDTO());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<MasinaDetailDTO>> getMasiniByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(masinaService.getMasiniByUserIdDTO(userId));
+    @GetMapping("/me")
+    public ResponseEntity<List<MasinaDetailDTO>> getMasinileMele() {
+        Long userId = currentUserService.getCurrentUserId();
+
+        return ResponseEntity.ok(
+                masinaService.getMasiniByUserIdDTO(userId)
+        );
     }
 
     @GetMapping("/{id}")
@@ -78,11 +85,16 @@ public class MasinaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<?> createMasina(@PathVariable Long userId, @RequestBody Masina masina) {
+
+    @PostMapping
+    public ResponseEntity<?> createMasina(@RequestBody Masina masina) {
         try {
+            Long userId = currentUserService.getCurrentUserId();
             Masina createdMasina = masinaService.createMasina(userId, masina);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdMasina);
+
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(createdMasina);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -127,5 +139,8 @@ public class MasinaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+
 
 }

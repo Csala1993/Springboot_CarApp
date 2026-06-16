@@ -1,17 +1,14 @@
 package com.carapp.carmaintenance.service;
 
-import com.carapp.carmaintenance.dto.MasinaDTO;
-import com.carapp.carmaintenance.dto.UserDTO;
+import com.carapp.carmaintenance.dto.AdminUserDTO;
 import com.carapp.carmaintenance.model.User;
 import com.carapp.carmaintenance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.carapp.carmaintenance.dto.AdminUserDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -61,27 +58,6 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public List<UserDTO> getAllUsersDto() {
-        return userRepository.findAll().stream()
-                .map(u -> new UserDTO(
-                        u.getId(),
-                        u.getNume(),
-                        u.getEmail(),
-                        u.getParola(),
-                        u.getMasini().stream()
-                                .map(m -> new MasinaDTO(
-                                        m.getId(),
-                                        m.getMarca(),
-                                        m.getModel(),
-                                        m.getAn(),
-                                        m.getNumarInmatriculare(),
-                                        m.getVin(),
-                                        m.getKilometraj()
-                                ))
-                                .collect(Collectors.toList())
-                ))
-                .collect(Collectors.toList());
-    }
 
     public List<AdminUserDTO> getAllUsersForAdmin() {
         return userRepository.findAll()

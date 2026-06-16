@@ -1,13 +1,12 @@
 package com.carapp.carmaintenance.service;
 
-import com.carapp.carmaintenance.dto.PiesaMiniDTO;
-import com.carapp.carmaintenance.dto.IstoricServiceDTO;
+import com.carapp.carmaintenance.dto.PiesaResponseDTO;
+import com.carapp.carmaintenance.dto.IstoricServiceResponseDTO;
 import com.carapp.carmaintenance.dto.MasinaDTO;
 import com.carapp.carmaintenance.model.IstoricService;
 import com.carapp.carmaintenance.model.Masina;
 import com.carapp.carmaintenance.model.Piesa;
 import com.carapp.carmaintenance.repository.IstoricServiceRepository;
-import com.carapp.carmaintenance.repository.MasinaRepository;
 import com.carapp.carmaintenance.repository.PiesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,27 +24,41 @@ public class IstoricServiceService {
     private IstoricServiceRepository istoricServiceRepository;
 
     @Autowired
-    private MasinaRepository masinaRepository;
-
-    @Autowired
     private PiesaRepository piesaRepository;
 
+    @Autowired
+    private MasinaService masinaService;
+
     public List<IstoricService> getAllServices() {
+
         return istoricServiceRepository.findAll();
     }
 
     public List<IstoricService> getServicesByMasinaId(Long masinaId) {
-        return istoricServiceRepository.findByMasinaIdOrderByDataServiceDesc(masinaId);
+        masinaService.getMasinaCurenta(masinaId);
+
+        return istoricServiceRepository
+                .findByMasinaIdOrderByDataServiceDesc(masinaId);
     }
 
+    @Transactional(readOnly = true)
     public Optional<IstoricService> getServiceById(Long id) {
-        return istoricServiceRepository.findById(id);
+        Optional<IstoricService> service =
+                istoricServiceRepository.findById(id);
+
+        service.ifPresent(item ->
+                masinaService.getMasinaCurenta(
+                        item.getMasina().getId()
+                )
+        );
+
+        return service;
     }
 
     @Transactional
     public IstoricService createService(Long masinaId, IstoricService service, List<PiesaRequestDTO> pieseRequest) {
-        Masina masina = masinaRepository.findById(masinaId)
-                .orElseThrow(() -> new RuntimeException("Mașina nu a fost găsită!"));
+
+        Masina masina = masinaService.getMasinaCurenta(masinaId);
 
         service.setMasina(masina);
 
@@ -78,6 +91,8 @@ public class IstoricServiceService {
     public IstoricService updateService(Long id, IstoricService serviceDetails, List<PiesaRequestDTO> pieseRequest) {
         IstoricService service = istoricServiceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Service-ul nu a fost găsit!"));
+
+        masinaService.getMasinaCurenta(service.getMasina().getId());
 
         service.setDataService(serviceDetails.getDataService());
         service.setKilometrajLaService(serviceDetails.getKilometrajLaService());
@@ -113,13 +128,19 @@ public class IstoricServiceService {
         return istoricServiceRepository.save(service);
     }
 
+    @Transactional
     public void deleteService(Long id) {
         IstoricService service = istoricServiceRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Service-ul nu a fost găsit!"));
+                .orElseThrow(() ->
+                        new RuntimeException("Service-ul nu a fost gasit!")
+                );
+
+        masinaService.getMasinaCurenta(service.getMasina().getId());
+
         istoricServiceRepository.delete(service);
     }
 
-    public IstoricServiceDTO convertToDTO(IstoricService service) {
+    public IstoricServiceResponseDTO convertToDTO(IstoricService service) {
         MasinaDTO masinaDTO = new MasinaDTO(
                 service.getMasina().getId(),
                 service.getMasina().getMarca(),
@@ -130,11 +151,11 @@ public class IstoricServiceService {
                 service.getMasina().getKilometraj()
         );
 
-        List<PiesaMiniDTO> pieseDTO = service.getPieseSchimbate().stream()
-                .map(p -> new PiesaMiniDTO(p.getId(), p.getNume(), p.getPret()))
+        List<PiesaResponseDTO> pieseDTO = service.getPieseSchimbate().stream()
+                .map(p -> new PiesaResponseDTO(p.getId(), p.getNume(), p.getPret()))
                 .collect(Collectors.toList());
 
-        return new IstoricServiceDTO(
+        return new IstoricServiceResponseDTO(
                 service.getId(),
                 service.getDataService(),
                 service.getKilometrajLaService(),
@@ -147,19 +168,19 @@ public class IstoricServiceService {
         );
     }
 
-    public List<IstoricServiceDTO> getAllServicesDTO() {
+    public List<IstoricServiceResponseDTO> getAllServicesDTO() {
         return getAllServices().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public List<IstoricServiceDTO> getServicesByMasinaIdDTO(Long masinaId) {
+    public List<IstoricServiceResponseDTO> getServicesByMasinaIdDTO(Long masinaId) {
         return getServicesByMasinaId(masinaId).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<IstoricServiceDTO> getServiceByIdDTO(Long id) {
+    public Optional<IstoricServiceResponseDTO> getServiceByIdDTO(Long id) {
         return getServiceById(id).map(this::convertToDTO);
     }
 }

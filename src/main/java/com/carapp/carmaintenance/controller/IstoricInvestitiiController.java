@@ -1,7 +1,7 @@
 package com.carapp.carmaintenance.controller;
 
 import com.carapp.carmaintenance.dto.InvestitieRequestDTO;
-import com.carapp.carmaintenance.dto.IstoricInvestitiiSimpleDTO;
+import com.carapp.carmaintenance.dto.IstoricInvestitiiResponseDTO;
 import com.carapp.carmaintenance.model.IstoricInvestitii;
 import com.carapp.carmaintenance.service.IstoricInvestitiiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class IstoricInvestitiiController {
 
 
     @GetMapping("/masina/{masinaId}")
-    public ResponseEntity<List<IstoricInvestitiiSimpleDTO>> getByMasina(@PathVariable Long masinaId) {
+    public ResponseEntity<List<IstoricInvestitiiResponseDTO>> getByMasina(@PathVariable Long masinaId) {
         return ResponseEntity.ok(investitiiService.getInvestitiiByMasina(masinaId));
     }
 

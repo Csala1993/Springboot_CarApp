@@ -2,7 +2,6 @@ package com.carapp.carmaintenance.controller;
 
 import com.carapp.carmaintenance.model.Notificare;
 import com.carapp.carmaintenance.service.NotificareService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,35 +12,44 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class NotificareController {
 
-    @Autowired
-    private NotificareService notificareService;
+    private final NotificareService notificareService;
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Notificare>> getNotificari(@PathVariable Long userId) {
-        return ResponseEntity.ok(notificareService.getNotificariByUserId(userId));
+    public NotificareController(NotificareService notificareService) {
+        this.notificareService = notificareService;
     }
 
-    @GetMapping("/user/{userId}/necitite")
-    public ResponseEntity<List<Notificare>> getNotificariNecitite(@PathVariable Long userId) {
-        return ResponseEntity.ok(notificareService.getNotificariNecititeByUserId(userId));
+    @GetMapping("/me")
+    public ResponseEntity<List<Notificare>> getNotificarileMele() {
+        return ResponseEntity.ok(
+                notificareService.getNotificarileMele()
+        );
     }
 
-    @GetMapping("/user/{userId}/count")
-    public ResponseEntity<Long> getNumarNecitite(@PathVariable Long userId) {
-        return ResponseEntity.ok(notificareService.getNumarNotificariNecitite(userId));
+    @GetMapping("/me/necitite")
+    public ResponseEntity<List<Notificare>> getNotificarileMeleNecitite() {
+        return ResponseEntity.ok(
+                notificareService.getNotificarileMeleNecitite()
+        );
+    }
+
+    @GetMapping("/me/count")
+    public ResponseEntity<Long> getNumarulMeuDeNecitite() {
+        return ResponseEntity.ok(
+                notificareService.getNumarulMeuDeNotificariNecitite()
+        );
     }
 
     @PutMapping("/{id}/citita")
     public ResponseEntity<?> marcheazaCitita(@PathVariable Long id) {
         notificareService.marcheazaCaCitita(id);
-        return ResponseEntity.ok("Notificare marcată ca citită!");
+        return ResponseEntity.ok("Notificare marcata ca citita.");
     }
 
-    @PutMapping("/user/{userId}/toate-citite")
-    public ResponseEntity<?> marcheazaToateCitite(@PathVariable Long userId) {
-        notificareService.marcheazaToateCaCitite(userId);
-        return ResponseEntity.ok("Toate notificările marcate ca citite!");
+    @PutMapping("/me/toate-citite")
+    public ResponseEntity<?> marcheazaToateCitite() {
+        notificareService.marcheazaToateAleMeleCaCitite();
+        return ResponseEntity.ok(
+                "Toate notificarile au fost marcate ca citite."
+        );
     }
-
-
 }
